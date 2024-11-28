@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+	<column id="3" colour="#5ABA5D">2</column>
+	<column id="2" colour="#5ABA5D">3</column>
+	<column id="1" colour="#5ABA5D">4</column>
+	<column id="0" colour="#969292">7</column>
+	<column id="-1" colour="#FF8989">4</column>
+	<column id="-2" colour="#FF8989">3</column>
+	<column id="-3" colour="#FF8989">2</column>
+</map>
+
