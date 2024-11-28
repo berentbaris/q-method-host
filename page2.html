@@ -8,14 +8,29 @@
 </head>
 <body>
     <h1>Step 2: Sort Statements into Three Categories</h1>
-    <div id="categories">
-        <div id="agree" class="category">Agree</div>
-        <div id="neutral" class="category">Neutral</div>
-        <div id="disagree" class="category">Disagree</div>
-    </div>
-    <ul id="statements">
-        <!-- Statements dynamically generated from uploaded template -->
+    <p>Drag the statements below into the appropriate categories.</p>
+
+    <ul id="statements" class="statement-list">
+        <!-- Statements will be dynamically populated here -->
     </ul>
+
+    <div id="categories">
+        <div id="agree" class="category">
+            <h3>Agree</h3>
+            <ul class="dropzone"></ul>
+        </div>
+        <div id="neutral" class="category">
+            <h3>Neutral</h3>
+            <ul class="dropzone"></ul>
+        </div>
+        <div id="disagree" class="category">
+            <h3>Disagree</h3>
+            <ul class="dropzone"></ul>
+        </div>
+    </div>
+
+    <button id="save-categories">Save Categories</button>
+
     <script src="js/page2.js"></script>
 </body>
 </html>
