@@ -1,0 +1,82 @@
+/* Page 2 Styling */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.statements-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.statement-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.statement-list li {
+    background-color: #f2f2f2;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 200px;
+    text-align: center;
+}
+
+#categories {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 30px;
+}
+
+.category {
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 30%;
+    min-height: 200px;
+}
+
+.category h3 {
+    text-align: center;
+}
+
+.dropzone {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    height: 150px;
+    overflow-y: auto;
+    border: 1px dashed #bbb;
+    margin-top: 20px;
+}
+
+.dropzone li {
+    background-color: #d1f7d1;
+    padding: 5px;
+    margin: 3px;
+    border-radius: 4px;
+    cursor: move;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

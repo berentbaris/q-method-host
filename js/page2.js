@@ -1,13 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Load uploaded data from sessionStorage
     const jsonData = JSON.parse(sessionStorage.getItem("uploadedData"));
-
     if (!jsonData) {
         alert("No data uploaded. Please go back to Step 1.");
         return;
     }
 
-    const statements = jsonData.map((row) => row[0]); // Assuming statements are in the first column
+    const statements = jsonData.map((row) => row[1]); // Assuming statements are in the second column
     const statementList = document.getElementById("statements");
 
     // Populate the statement list
