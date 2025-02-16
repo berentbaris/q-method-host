@@ -12,11 +12,10 @@
         Download the Q-study template Excel file, fill it in with your statements and Q-sort pyramid information, and upload it back here.
     </p>
     <a href="data/template.xlsx" download="template.xlsx">Download Template</a>
-    <form id="upload-form">
-        <label for="file-upload">Upload Your Filled Template:</label>
-        <input type="file" id="file-upload" accept=".xlsx">
-        <button type="button" id="upload-button">Upload</button>
-    </form>
+    <form id="uploadForm">
+        <input type="file" id="fileUpload" accept=".xlsx" required />
+        <button type="submit">Upload</button>
+    </form>    
     <div id="upload-feedback"></div>
     <script src="js/page1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>

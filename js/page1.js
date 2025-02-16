@@ -1,4 +1,4 @@
-window.onload = function () {
+document.addEventListener("DOMContentLoaded", function () {
     const uploadForm = document.getElementById("uploadForm");
     if (!uploadForm) {
         console.error("Error: #uploadForm not found. Ensure the form exists in page1.html.");
@@ -9,6 +9,7 @@ window.onload = function () {
         e.preventDefault();
 
         const fileInput = document.getElementById("fileUpload");
+        const statusMessage = document.getElementById("statusMessage"); // Debug message
         if (!fileInput || fileInput.files.length === 0) {
             alert("Please upload an Excel file.");
             return;
@@ -23,6 +24,7 @@ window.onload = function () {
                 const workbook = XLSX.read(data, { type: "array" });
 
                 console.log("Workbook loaded:", workbook.SheetNames);
+                statusMessage.innerText = "Workbook loaded successfully!"; // Debug message
 
                 if (workbook.SheetNames.length < 2) {
                     alert("Error: The uploaded file must contain at least two sheets (Statements & Map).");
@@ -45,16 +47,19 @@ window.onload = function () {
                 sessionStorage.setItem("uploadedData", JSON.stringify(jsonData));
                 sessionStorage.setItem("pyramidMap", JSON.stringify(mapData));
 
+                statusMessage.innerText = "File uploaded successfully!";
                 alert("File uploaded successfully!");
             } catch (error) {
                 console.error("Error reading file:", error);
+                statusMessage.innerText = "Error processing the file.";
                 alert("Error: Failed to process the uploaded file. Please check the console for details.");
             }
         };
 
         reader.onerror = function (error) {
             console.error("FileReader error:", error);
+            statusMessage.innerText = "Error reading the file.";
             alert("Error reading the file. Please try again.");
         };
     });
-};
+});
