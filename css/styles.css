@@ -44,22 +44,6 @@ h1 {
     min-height: 200px;
 }
 
-.categories-container {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-.dropzone {
-    width: 30%;
-    min-height: 150px;
-    border: 2px dashed #ccc;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-    background-color: #f9f9f9;
-}
-
 .category h3 {
     text-align: center;
 }

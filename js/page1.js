@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const sheetNameStatements = workbook.SheetNames[0];
                 const sheetStatements = workbook.Sheets[sheetNameStatements];
                 const jsonData = XLSX.utils.sheet_to_json(sheetStatements, { header: 1 }).slice(1); // Skip header row
-                console.log("Statements data:", jsonData);
+                const statementTexts = jsonData.map(row => row[1]); // Extract second column
+                console.log("Statements data:", statementTexts);
 
                 // Read second sheet (Map)
                 const sheetNameMap = workbook.SheetNames[1];
@@ -49,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Pyramid Map data:", mapData);
 
                 // Store data in sessionStorage
-                sessionStorage.setItem("uploadedData", JSON.stringify(jsonData.map(row => row[1])));
+                sessionStorage.setItem("uploadedData", JSON.stringify(statementTexts));
                 sessionStorage.setItem("pyramidMap", JSON.stringify(mapData));
 
                 statusMessage.innerText = "File uploaded successfully!";

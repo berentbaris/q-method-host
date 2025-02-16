@@ -21,52 +21,34 @@ document.addEventListener("DOMContentLoaded", function () {
         disagree: [],
     };
 
-    function showNextStatement() {
-        statementContainer.innerHTML = ""; // Clear previous statement
-
-        if (currentIndex < statements.length) {
-            const statement = statements[currentIndex];
-            const listItem = document.createElement("li");
-            listItem.textContent = statement;
-            listItem.setAttribute("draggable", true);
-
-            listItem.addEventListener("dragstart", function (event) {
-                event.dataTransfer.setData("text/plain", statement);
-            });
-
-            statementContainer.appendChild(listItem);
-        } else {
-            // All statements are categorized
-            alert("All statements categorized!");
-            saveButton.disabled = false; // Enable save button
+    document.addEventListener("DOMContentLoaded", function () {
+        const jsonData = JSON.parse(sessionStorage.getItem("uploadedData"));
+        if (!jsonData) {
+            alert("No data uploaded. Please go back to Step 1.");
+            return;
         }
-    }
-
-    // Handle dropping into a category
-    dropzones.forEach((dropzone) => {
-        dropzone.addEventListener("dragover", function (event) {
-            event.preventDefault();
-        });
-
-        dropzone.addEventListener("drop", function (event) {
-            event.preventDefault();
-            const statement = event.dataTransfer.getData("text/plain");
-
-            if (statement) {
-                const droppedItem = document.createElement("li");
-                droppedItem.textContent = statement;
-
-                dropzone.appendChild(droppedItem);
-
-                // Store categorized statement
-                categorizedStatements[dropzone.id].push(statement);
-
-                // Move to next statement
-                currentIndex++;
-                showNextStatement();
+    
+        const statements = jsonData.map(statement => Array.isArray(statement) ? statement[1] : statement); // Ensure only statement text
+        let currentIndex = 0;
+    
+        function showNextStatement() {
+            if (currentIndex < statements.length) {
+                document.getElementById("statementBox").innerText = statements[currentIndex];
+                console.log("Next statement index:", currentIndex, "Statement:", statements[currentIndex]); // Debugging log
+                currentIndex++; // Move to the next statement
+            } else {
+                document.getElementById("statementBox").innerText = "All statements sorted!";
             }
-        });
+        }
+    
+        function handleDrop(event) {
+            event.preventDefault();
+            showNextStatement(); // Show the next statement after dropping
+        }
+    
+        showNextStatement(); // Start with the first statement
     });
+    
 
     // Save categorized data
     saveButton.addEventListener("click", function () {
