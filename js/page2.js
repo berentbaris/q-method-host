@@ -1,69 +1,61 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Load uploaded data from sessionStorage
     const jsonData = JSON.parse(sessionStorage.getItem("uploadedData"));
-
     if (!jsonData) {
         alert("No data uploaded. Please go back to Step 1.");
         return;
     }
 
-    const statements = jsonData.map((row) => row[1]); // Assuming statements are in the second column
-    const statementList = document.getElementById("statements");
+    const statements = jsonData; // jsonData already contains statement texts
+    let currentIndex = 0;
 
-    // Populate the statement list
-    statements.forEach((statement) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = statement;
-        listItem.setAttribute("draggable", true);
+    console.log("Loaded statements:", statements); // Check if statements load correctly
 
-        listItem.addEventListener("dragstart", function (event) {
-            event.dataTransfer.setData("text/plain", statement);
-        });
-
-        statementList.appendChild(listItem);
-    });
-
-    // Add drag-and-drop functionality to categories
+    const statementContainer = document.getElementById("statements");
     const dropzones = document.querySelectorAll(".dropzone");
+    const saveButton = document.getElementById("save-categories");
+    saveButton.disabled = true; // Disable save button initially
 
-    dropzones.forEach((dropzone) => {
-        dropzone.addEventListener("dragover", function (event) {
-            event.preventDefault(); // Allow dropping
-        });
+    let categorizedStatements = {
+        agree: [],
+        neutral: [],
+        disagree: [],
+    };
 
-        dropzone.addEventListener("drop", function (event) {
-            event.preventDefault();
-            const statement = event.dataTransfer.getData("text/plain");
-
-            const droppedItem = document.createElement("li");
-            droppedItem.textContent = statement;
-
-            dropzone.appendChild(droppedItem);
-
-            // Remove the statement from the original list
-            const items = Array.from(statementList.children);
-            const itemToRemove = items.find((item) => item.textContent === statement);
-            if (itemToRemove) {
-                statementList.removeChild(itemToRemove);
+    document.addEventListener("DOMContentLoaded", function () {
+        const jsonData = JSON.parse(sessionStorage.getItem("uploadedData"));
+        if (!jsonData) {
+            alert("No data uploaded. Please go back to Step 1.");
+            return;
+        }
+    
+        const statements = jsonData.map(statement => Array.isArray(statement) ? statement[1] : statement); // Ensure only statement text
+        let currentIndex = 0;
+    
+        function showNextStatement() {
+            if (currentIndex < statements.length) {
+                document.getElementById("statementBox").innerText = statements[currentIndex];
+                console.log("Next statement index:", currentIndex, "Statement:", statements[currentIndex]); // Debugging log
+                currentIndex++; // Move to the next statement
+            } else {
+                document.getElementById("statementBox").innerText = "All statements sorted!";
             }
-        });
+        }
+    
+        function handleDrop(event) {
+            event.preventDefault();
+            showNextStatement(); // Show the next statement after dropping
+        }
+    
+        showNextStatement(); // Start with the first statement
     });
+    
 
-    // Save sorted categories to sessionStorage
-    document.getElementById("save-categories").addEventListener("click", function () {
-        const sortedCategories = {
-            agree: Array.from(document.querySelector("#agree .dropzone").children).map(
-                (item) => item.textContent
-            ),
-            neutral: Array.from(document.querySelector("#neutral .dropzone").children).map(
-                (item) => item.textContent
-            ),
-            disagree: Array.from(document.querySelector("#disagree .dropzone").children).map(
-                (item) => item.textContent
-            ),
-        };
-
-        sessionStorage.setItem("sortedCategories", JSON.stringify(sortedCategories));
+    // Save categorized data
+    saveButton.addEventListener("click", function () {
+        sessionStorage.setItem("sortedCategories", JSON.stringify(categorizedStatements));
         alert("Categories saved successfully!");
     });
+
+    // Show the first statement
+    showNextStatement();
 });
