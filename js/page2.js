@@ -5,12 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    const statements = jsonData; // jsonData already contains statement texts
+    console.log("Loaded Statements:", jsonData); // Debugging
+
+    const statements = jsonData.map(statement => statement.text); // Extract only text
     let currentIndex = 0;
 
-    console.log("Loaded statements:", statements); // Check if statements load correctly
+    console.log("Loaded statements:", statements); // Debugging
 
-    const statementContainer = document.getElementById("statements");
+    const statementContainer = document.getElementById("statement-container"); // Ensure this exists in HTML
     const dropzones = document.querySelectorAll(".dropzone");
     const saveButton = document.getElementById("save-categories");
     saveButton.disabled = true; // Disable save button initially
@@ -21,34 +23,29 @@ document.addEventListener("DOMContentLoaded", function () {
         disagree: [],
     };
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const jsonData = JSON.parse(sessionStorage.getItem("uploadedData"));
-        if (!jsonData) {
-            alert("No data uploaded. Please go back to Step 1.");
-            return;
+    function showNextStatement() {
+        if (currentIndex < statements.length) {
+            statementContainer.innerText = statements[currentIndex]; 
+            currentIndex++;
+        } else {
+            statementContainer.innerText = "All statements sorted!";
         }
-    
-        const statements = jsonData.map(statement => Array.isArray(statement) ? statement[1] : statement); // Ensure only statement text
-        let currentIndex = 0;
-    
-        function showNextStatement() {
-            if (currentIndex < statements.length) {
-                document.getElementById("statementBox").innerText = statements[currentIndex];
-                console.log("Next statement index:", currentIndex, "Statement:", statements[currentIndex]); // Debugging log
-                currentIndex++; // Move to the next statement
-            } else {
-                document.getElementById("statementBox").innerText = "All statements sorted!";
-            }
-        }
-    
-        function handleDrop(event) {
+    }
+
+    dropzones.forEach(dropzone => {
+        dropzone.addEventListener("dragover", function (event) {
             event.preventDefault();
-            showNextStatement(); // Show the next statement after dropping
-        }
-    
-        showNextStatement(); // Start with the first statement
+        });
+
+        dropzone.addEventListener("drop", function (event) {
+            event.preventDefault();
+            let category = dropzone.getAttribute("data-category");
+            if (currentIndex > 0) {
+                categorizedStatements[category].push(statements[currentIndex - 1]); // Add previous statement to category
+            }
+            showNextStatement();
+        });
     });
-    
 
     // Save categorized data
     saveButton.addEventListener("click", function () {

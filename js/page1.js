@@ -40,7 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 const sheetNameStatements = workbook.SheetNames[0];
                 const sheetStatements = workbook.Sheets[sheetNameStatements];
                 const jsonData = XLSX.utils.sheet_to_json(sheetStatements, { header: 1 }).slice(1); // Skip header row
-                console.log("Statements data:", jsonData);
+                const statementObjects = jsonData.map((row, index) => ({
+                    id: index + 1,   // Assign a unique ID
+                    text: row[1]      // Extract second column as the statement text
+                }));
+                console.log("Processed Statements Data:", statementObjects); // Debugging
 
                 // Read second sheet (Map)
                 const sheetNameMap = workbook.SheetNames[1];
@@ -50,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Store data in sessionStorage
                 const statementTexts = jsonData.map(row => row.slice(1)).flat(); 
-                sessionStorage.setItem("uploadedData", JSON.stringify(statementTexts));
+                sessionStorage.setItem("uploadedData", JSON.stringify(statementObjects));
                 console.log("Stored statements:", statementTexts); // Debugging log
                 sessionStorage.setItem("pyramidMap", JSON.stringify(mapData));
 
