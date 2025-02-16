@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     const uploadForm = document.getElementById("uploadForm");
+    const statusMessage = document.getElementById("statusMessage"); // Ensure this exists
+
     if (!uploadForm) {
-        console.error("Error: #uploadForm not found. Ensure the form exists in page1.html.");
+        console.error("Error: #uploadForm not found. Ensure it exists in page1.html.");
+        return;
+    }
+    if (!statusMessage) {
+        console.error("Error: #statusMessage not found. Ensure it exists in page1.html.");
         return;
     }
 
@@ -9,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
 
         const fileInput = document.getElementById("fileUpload");
-        const statusMessage = document.getElementById("statusMessage"); // Debug message
         if (!fileInput || fileInput.files.length === 0) {
             alert("Please upload an Excel file.");
             return;
@@ -24,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const workbook = XLSX.read(data, { type: "array" });
 
                 console.log("Workbook loaded:", workbook.SheetNames);
-                statusMessage.innerText = "Workbook loaded successfully!"; // Debug message
+                statusMessage.innerText = "Workbook loaded successfully!"; // Now it will work
 
                 if (workbook.SheetNames.length < 2) {
                     alert("Error: The uploaded file must contain at least two sheets (Statements & Map).");
