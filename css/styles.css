@@ -44,6 +44,22 @@ h1 {
     min-height: 200px;
 }
 
+.categories-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.dropzone {
+    width: 30%;
+    min-height: 150px;
+    border: 2px dashed #ccc;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
 .category h3 {
     text-align: center;
 }
@@ -80,3 +96,52 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.categories-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.category {
+    width: 30%;
+    min-height: 100px;
+    border: 2px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+.pyramid-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pyramid-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.dropzone {
+    width: 100px;
+    height: 50px;
+    border: 2px dashed black;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.statement {
+    background-color: lightgray;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: grab;
+}
+
