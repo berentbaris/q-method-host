@@ -7,12 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("Loaded Statements:", jsonData); // Debugging
 
-    const statements = jsonData.map(statement => statement.text); // Extract only text
-    let currentIndex = 0;
-
-    console.log("Loaded statements:", statements); // Debugging
-
-    const statementContainer = document.getElementById("statement-container"); // Ensure this exists in HTML
+    const statementContainer = document.getElementById("statements");
     const dropzones = document.querySelectorAll(".dropzone");
     const saveButton = document.getElementById("save-categories");
     saveButton.disabled = true; // Disable save button initially
@@ -23,27 +18,40 @@ document.addEventListener("DOMContentLoaded", function () {
         disagree: [],
     };
 
-    function showNextStatement() {
-        if (currentIndex < statements.length) {
-            statementContainer.innerText = statements[currentIndex]; 
-            currentIndex++;
-        } else {
-            statementContainer.innerText = "All statements sorted!";
-        }
-    }
+    // 🛠 Create draggable statement elements
+    jsonData.forEach(statement => {
+        const statementDiv = document.createElement("div");
+        statementDiv.classList.add("statement");
+        statementDiv.textContent = statement.text;
+        statementDiv.draggable = true;
+        statementDiv.dataset.id = statement.id;
 
+        statementDiv.addEventListener("dragstart", (event) => {
+            event.dataTransfer.setData("text/plain", statement.id);
+        });
+
+        statementContainer.appendChild(statementDiv);
+    });
+
+    // 🛠 Enable drag-and-drop for each drop zone
     dropzones.forEach(dropzone => {
-        dropzone.addEventListener("dragover", function (event) {
+        dropzone.addEventListener("dragover", (event) => {
             event.preventDefault();
         });
 
-        dropzone.addEventListener("drop", function (event) {
+        dropzone.addEventListener("drop", (event) => {
             event.preventDefault();
-            let category = dropzone.getAttribute("data-category");
-            if (currentIndex > 0) {
-                categorizedStatements[category].push(statements[currentIndex - 1]); // Add previous statement to category
+            const statementId = event.dataTransfer.getData("text/plain");
+            const draggedElement = document.querySelector(`[data-id='${statementId}']`);
+            
+            if (draggedElement) {
+                dropzone.appendChild(draggedElement); // Move element to new category
+                const category = dropzone.getAttribute("data-category");
+                categorizedStatements[category].push(draggedElement.textContent);
             }
-            showNextStatement();
+
+            // Enable save button once a statement is categorized
+            saveButton.disabled = false;
         });
     });
 
@@ -52,7 +60,4 @@ document.addEventListener("DOMContentLoaded", function () {
         sessionStorage.setItem("sortedCategories", JSON.stringify(categorizedStatements));
         alert("Categories saved successfully!");
     });
-
-    // Show the first statement
-    showNextStatement();
 });
