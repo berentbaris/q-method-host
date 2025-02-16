@@ -5,8 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    const statements = jsonData.map((row) => row[0]); // Extract first column
+    const statements = jsonData; // jsonData already contains statement texts
     let currentIndex = 0;
+
+    console.log("Loaded statements:", statements); // Check if statements load correctly
 
     const statementContainer = document.getElementById("statements");
     const dropzones = document.querySelectorAll(".dropzone");

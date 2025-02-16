@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Pyramid Map data:", mapData);
 
                 // Store data in sessionStorage
-                sessionStorage.setItem("uploadedData", JSON.stringify(jsonData));
+                sessionStorage.setItem("uploadedData", JSON.stringify(jsonData.map(row => row[1])));
                 sessionStorage.setItem("pyramidMap", JSON.stringify(mapData));
 
                 statusMessage.innerText = "File uploaded successfully!";
