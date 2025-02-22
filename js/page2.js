@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const jsonData = JSON.parse(sessionStorage.getItem("uploadedData"));
-    if (!jsonData) {
+    if (!jsonData || jsonData.length === 0) {
         alert("No data uploaded. Please go back to Step 1.");
         return;
     }
@@ -24,10 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
         statementContainer.innerHTML = ""; // Clear previous statement
 
         if (currentIndex < jsonData.length) {
-            const statement = jsonData[currentIndex];
+            const statement = jsonData[currentIndex]; // Get the next statement
             const statementDiv = document.createElement("div");
             statementDiv.classList.add("statement");
-            statementDiv.textContent = statement.text;
+            statementDiv.textContent = statement.text; // Ensure it's just the text
             statementDiv.draggable = true;
             statementDiv.dataset.id = statement.id;
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const category = dropzone.getAttribute("data-category");
                 categorizedStatements[category].push(draggedElement.textContent);
                 currentIndex++; // Move to next statement
-                setTimeout(showNextStatement, 500); // Show next statement after a short delay
+                setTimeout(showNextStatement, 300); // Show next statement after a short delay
             }
 
             // Enable save button when sorting is completed
