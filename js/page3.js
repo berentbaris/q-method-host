@@ -1,75 +1,84 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const pyramidData = JSON.parse(sessionStorage.getItem("pyramidMap"));
-    const categorizedStatements = JSON.parse(sessionStorage.getItem("sortedCategories"));
-    
-    if (!pyramidData || !categorizedStatements) {
-        alert("Missing data. Please go back and complete Steps 1 and 2.");
+    const savedStatements = JSON.parse(sessionStorage.getItem("sortedCategories"));
+
+    if (!savedStatements) {
+        alert("No sorted data found. Please go back to Step 2.");
         return;
     }
 
-    const pyramidContainer = document.getElementById("pyramid");
+    const pyramid = document.getElementById("pyramid");
+    const saveButton = document.getElementById("save-qsort");
 
-    // Create the pyramid structure
-    pyramidData.forEach(row => {
-        const colID = row["ID"];
-        const numStatements = row["Number of Statements"];
-        const colColor = row["Color"];
+    let draggedStatement = null;
 
-        const column = document.createElement("div");
-        column.classList.add("pyramid-column");
-        column.style.backgroundColor = colColor;
-        column.dataset.limit = numStatements;
-        column.dataset.id = colID;
+    // Convert saved categories into a flat array of statements
+    let statements = [
+        ...savedStatements.agree,
+        ...savedStatements.neutral,
+        ...savedStatements.disagree
+    ];
 
-        for (let i = 0; i < numStatements; i++) {
-            const dropZone = document.createElement("div");
-            dropZone.classList.add("dropzone");
-            column.appendChild(dropZone);
-        }
+    console.log("Loaded statements for Q-sort:", statements);
 
-        pyramidContainer.appendChild(column);
-    });
+    // Shuffle statements randomly
+    statements = statements.sort(() => Math.random() - 0.5);
 
-    // Enable drag-and-drop for statements
-    const categories = document.querySelectorAll(".category");
-    categories.forEach(category => {
-        category.addEventListener("dragstart", (event) => {
-            event.dataTransfer.setData("text/plain", event.target.textContent);
-        });
-    });
+    // Create draggable statements
+    statements.forEach((text, index) => {
+        const statementItem = document.createElement("div");
+        statementItem.classList.add("statement");
+        statementItem.draggable = true;
+        statementItem.textContent = text;
+        statementItem.dataset.id = index;
 
-    // Enable drop functionality for pyramid slots
-    const dropZones = document.querySelectorAll(".dropzone");
-    dropZones.forEach(zone => {
-        zone.addEventListener("dragover", (event) => {
-            event.preventDefault();
+        statementItem.addEventListener("dragstart", function (event) {
+            draggedStatement = event.target;
+            setTimeout(() => event.target.classList.add("dragging"), 0);
         });
 
-        zone.addEventListener("drop", (event) => {
+        statementItem.addEventListener("dragend", function () {
+            draggedStatement.classList.remove("dragging");
+            draggedStatement = null;
+        });
+
+        pyramid.appendChild(statementItem); // Statements start in the pyramid container
+    });
+
+    // Enable drop zones
+    const dropzones = document.querySelectorAll(".dropzone");
+
+    dropzones.forEach((dropzone) => {
+        dropzone.addEventListener("dragover", function (event) {
             event.preventDefault();
-            const statement = event.dataTransfer.getData("text/plain");
+            dropzone.classList.add("drag-over");
+        });
 
-            if (!statement) return;
+        dropzone.addEventListener("dragleave", function () {
+            dropzone.classList.remove("drag-over");
+        });
 
-            if (zone.childNodes.length === 0) { // Limit each slot to one statement
-                const droppedItem = document.createElement("div");
-                droppedItem.textContent = statement;
-                droppedItem.classList.add("statement");
-                zone.appendChild(droppedItem);
+        dropzone.addEventListener("drop", function (event) {
+            event.preventDefault();
+            dropzone.classList.remove("drag-over");
+
+            if (draggedStatement) {
+                dropzone.appendChild(draggedStatement);
             }
         });
     });
 
-    // Save Q-Sort Data
-    document.getElementById("save-qsort").addEventListener("click", function () {
-        const sortedStatements = {};
-        pyramidContainer.querySelectorAll(".pyramid-column").forEach(column => {
-            const columnID = column.dataset.id;
-            const statements = Array.from(column.querySelectorAll(".statement")).map(s => s.textContent);
-            sortedStatements[columnID] = statements;
+    // Save the Q-sort results
+    saveButton.addEventListener("click", function () {
+        const sortedPyramid = {};
+
+        dropzones.forEach((dropzone) => {
+            const level = dropzone.dataset.level;
+            if (!sortedPyramid[level]) sortedPyramid[level] = [];
+            const statementsInZone = Array.from(dropzone.children).map(item => item.textContent);
+            sortedPyramid[level] = statementsInZone;
         });
 
-        sessionStorage.setItem("qsortData", JSON.stringify(sortedStatements));
-        alert("Q-Sort Pyramid saved!");
+        sessionStorage.setItem("qSortResults", JSON.stringify(sortedPyramid));
+        alert("Q-Sort saved successfully!");
     });
 });
