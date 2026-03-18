@@ -24,7 +24,4 @@ services:
       #   sync: false
       # - key: SMTP_FROM
       #   value: "Q-Sort <noreply@yourdomain.com>"
-    disk:
-      name: qmethod-data
-      mountPath: /opt/render/project/src/server/data
-      sizeGB: 1
+      
