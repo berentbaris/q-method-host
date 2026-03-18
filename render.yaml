@@ -1,0 +1,30 @@
+# Render Blueprint — deploy Q-Method Platform in one click
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: q-method-platform
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: NODE_ENV=production npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Optional: add SMTP vars to enable email delivery
+      # - key: SMTP_HOST
+      #   value: smtp.resend.com
+      # - key: SMTP_PORT
+      #   value: 465
+      # - key: SMTP_SECURE
+      #   value: true
+      # - key: SMTP_USER
+      #   sync: false
+      # - key: SMTP_PASS
+      #   sync: false
+      # - key: SMTP_FROM
+      #   value: "Q-Sort <noreply@yourdomain.com>"
+    disk:
+      name: qmethod-data
+      mountPath: /opt/render/project/src/server/data
+      sizeGB: 1

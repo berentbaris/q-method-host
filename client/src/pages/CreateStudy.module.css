@@ -1,0 +1,473 @@
+/* ===================================================
+   Create Study — Multi-step wizard
+   =================================================== */
+
+.page {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+/* --- Progress indicator --- */
+
+.progress {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+  overflow-x: auto;
+}
+
+.progressStep {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-paper-dark);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.active .dot {
+  background-color: var(--color-accent);
+}
+
+.current .dot {
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.label {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+  transition: color 0.2s ease;
+}
+
+.active .label {
+  color: var(--color-ink-light);
+}
+
+.current .label {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+/* --- Step content --- */
+
+.content {
+  min-height: 24rem;
+}
+
+.stepBlock {
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: var(--space-sm);
+}
+
+.stepHint {
+  font-size: 0.9rem;
+  color: var(--color-ink-light);
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+}
+
+/* --- Form fields --- */
+
+.fieldLabel {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink-light);
+  margin-bottom: var(--space-lg);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-xs);
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--color-ink);
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-xs);
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--color-ink);
+  resize: vertical;
+  font-family: var(--font-body);
+  transition: border-color 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+/* --- Statements --- */
+
+.addRow {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-end;
+  margin-bottom: var(--space-lg);
+}
+
+.addRow .input {
+  flex: 1;
+  margin-top: 0;
+}
+
+.btnAdd {
+  padding: 0.7rem 1.2rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnAdd:hover {
+  background: var(--color-accent-hover);
+}
+
+.btnToggleBulk {
+  padding: 0.7rem 1rem;
+  background: none;
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnToggleBulk:hover {
+  border-color: var(--color-ink-muted);
+  color: var(--color-ink-light);
+}
+
+.bulkArea {
+  margin-bottom: var(--space-lg);
+}
+
+.bulkActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.statementList {
+  border-top: 1px solid var(--color-paper-dark);
+  padding-top: var(--space-md);
+}
+
+.countLabel {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.statementItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-paper-warm);
+}
+
+.statementIndex {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  min-width: 1.5rem;
+  text-align: right;
+  padding-top: 2px;
+}
+
+.statementText {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.statementRemove {
+  background: none;
+  border: none;
+  color: var(--color-ink-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.3rem;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+.statementRemove:hover {
+  color: var(--color-error);
+}
+
+/* --- Pyramid config --- */
+
+.rangeInput {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-sm);
+  accent-color: var(--color-accent);
+}
+
+.pyramidPreview {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  margin: var(--space-xl) 0 var(--space-md);
+  min-height: 10rem;
+}
+
+.pyramidCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.pyramidSlots {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pyramidSlot {
+  width: 2.5rem;
+  height: 2rem;
+  background: var(--color-paper-warm);
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 3px;
+}
+
+.pyramidScore {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  margin-top: 4px;
+}
+
+.pyramidInfo {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  text-align: center;
+}
+
+.mismatchWarn {
+  color: var(--color-error);
+}
+
+/* --- Email --- */
+
+.emailRow {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.emailRow .input {
+  flex: 1;
+  margin-top: 0;
+}
+
+/* --- Review --- */
+
+.reviewSection {
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-paper-warm);
+}
+
+.reviewLabel {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-xs);
+  font-weight: 500;
+}
+
+.reviewValue {
+  font-size: 0.95rem;
+  color: var(--color-ink);
+}
+
+/* --- Navigation buttons --- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-paper-dark);
+}
+
+.navSpacer {
+  flex: 1;
+}
+
+.btnBack {
+  padding: 0.7rem 1.2rem;
+  background: none;
+  border: none;
+  color: var(--color-ink-light);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btnBack:hover {
+  color: var(--color-ink);
+}
+
+.btnNext {
+  padding: 0.7rem 1.6rem;
+  background: var(--color-ink);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btnNext:hover {
+  background: var(--color-ink-light);
+}
+
+.btnCreate {
+  padding: 0.7rem 1.6rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btnCreate:hover {
+  background: var(--color-accent-hover);
+}
+
+.btnCreate:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* --- Error message --- */
+
+.errorMsg {
+  color: var(--color-error, #c44);
+  font-size: 0.9rem;
+  margin-top: var(--space-md);
+  padding: 0.7rem 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+/* --- Success screen --- */
+
+.successIcon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+}
+
+.codeDisplay {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--color-paper-warm, #f9f7f4);
+  border: 2px dashed var(--color-paper-dark, #ddd);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.codeValue {
+  font-family: 'DM Mono', 'SF Mono', monospace;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--color-accent);
+  user-select: all;
+}
+
+.btnCopy {
+  padding: 0.5rem 1rem;
+  background: var(--color-ink);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnCopy:hover {
+  background: var(--color-ink-light);
+}
+
+.shareLink {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.shareLinkLabel {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+}

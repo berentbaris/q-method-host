@@ -1,0 +1,436 @@
+/* ===================================================
+   PyramidSort — interactive pyramid placement grid
+   =================================================== */
+
+.container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding-bottom: var(--space-3xl);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: var(--space-sm);
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--color-ink-light);
+  line-height: 1.65;
+  margin-bottom: var(--space-lg);
+  max-width: 40rem;
+}
+
+.selectedHint {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* --- Progress --- */
+
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.progressBar {
+  flex: 1;
+  height: 4px;
+  background: var(--color-paper-dark);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progressText {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Source area (triaged cards) --- */
+
+.sourceArea {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.sourcePool {
+  background: var(--color-paper-warm);
+  border-radius: 8px;
+  padding: var(--space-md);
+}
+
+.poolLabel {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+}
+
+.poolLabel_disagree { color: #a8432a; }
+.poolLabel_neutral { color: #9a8030; }
+.poolLabel_agree { color: #4a7c50; }
+
+.poolCount {
+  font-weight: 400;
+  font-size: 0.7rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--color-ink-muted);
+}
+
+.poolCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.poolEmpty {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+
+/* --- Source card chips --- */
+
+.sourceCard {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 4px;
+  background: #fff;
+  cursor: grab;
+  transition: all 0.15s ease;
+  text-align: left;
+  line-height: 1.35;
+  max-width: 100%;
+  user-select: none;
+  touch-action: none;
+}
+
+.sourceCard:hover {
+  border-color: var(--color-ink-muted);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.sourceCardSelected {
+  border-color: var(--color-accent) !important;
+  background: var(--color-accent-light) !important;
+  box-shadow: 0 0 0 2px rgba(180, 77, 45, 0.15);
+}
+
+.sourceCard_disagree { border-left: 3px solid #daa08a; }
+.sourceCard_neutral { border-left: 3px solid #d4c080; }
+.sourceCard_agree { border-left: 3px solid #9dcaa0; }
+
+.sourceCardNum {
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  flex-shrink: 0;
+  font-size: 0.68rem;
+}
+
+.sourceCardText {
+  color: var(--color-ink-light);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Detail panel (hovered card full text) --- */
+
+.detailPanel {
+  background: #fff;
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 6px;
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+  animation: fadeSlide 0.15s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detailNum {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detailText {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-ink);
+  margin-top: 2px;
+}
+
+/* --- Pyramid grid --- */
+
+.pyramidWrap {
+  margin-bottom: var(--space-xl);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pyramidLabels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.pyramidEndLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pyramid {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  min-width: fit-content;
+}
+
+/* --- Column --- */
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  cursor: default;
+  transition: transform 0.15s ease;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.columnClickable {
+  cursor: pointer;
+}
+
+.columnClickable:hover {
+  background: rgba(180, 77, 45, 0.04);
+}
+
+.columnHovered {
+  background: rgba(180, 77, 45, 0.08);
+  transform: scale(1.02);
+}
+
+.columnFull {
+  opacity: 0.85;
+}
+
+.slotsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* --- Slot --- */
+
+.slot {
+  width: 5.5rem;
+  height: 3.8rem;
+  border: 2px dashed var(--color-paper-dark);
+  border-radius: 4px;
+  background: var(--color-paper-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.slotFilled {
+  border-style: solid;
+  border-color: var(--color-paper-dark);
+  background: #fff;
+}
+
+.slotPlaceholder {
+  color: var(--color-ink-muted);
+  font-size: 1.2rem;
+  opacity: 0.4;
+}
+
+/* --- Placed card in slot --- */
+
+.placedCard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 2px 4px;
+  background: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.15s ease;
+}
+
+.placedCard:hover {
+  background: #fdf5f2;
+  box-shadow: 0 0 0 2px var(--color-accent-light);
+}
+
+.placedNum {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.placedText {
+  font-size: 0.58rem;
+  line-height: 1.25;
+  color: var(--color-ink-light);
+  text-align: center;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* --- Score label below column --- */
+
+.scoreLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.scoreLabelZero {
+  color: var(--color-ink-light);
+}
+
+/* --- Drag ghost --- */
+
+.dragGhost {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background: #fff;
+  border: 1.5px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-width: 16rem;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Footer --- */
+
+.footer {
+  text-align: center;
+  padding-top: var(--space-md);
+}
+
+.footerHint {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.85rem 1.6rem;
+  background-color: var(--color-accent);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: var(--font-body);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s var(--ease-out);
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 900px) {
+  .sourceArea {
+    grid-template-columns: 1fr;
+  }
+
+  .slot {
+    width: 4rem;
+    height: 3rem;
+  }
+
+  .placedText {
+    display: none;
+  }
+
+  .placedNum {
+    font-size: 0.72rem;
+  }
+
+  .pyramid {
+    gap: 2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .slot {
+    width: 2.5rem;
+    height: 2.2rem;
+  }
+
+  .scoreLabel {
+    font-size: 0.65rem;
+  }
+
+  .pyramidEndLabel {
+    font-size: 0.6rem;
+  }
+}

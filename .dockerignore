@@ -1,0 +1,12 @@
+node_modules
+client/node_modules
+server/node_modules
+server/data
+.env
+*.db
+*.db-wal
+*.db-shm
+.git
+goals.md
+progress.md
+scheduled-task-prompt.md
