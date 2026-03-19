@@ -21,6 +21,42 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
+// Email diagnostic — lets you test whether SMTP is working
+// Visit /api/email-test to see config status and send a test email
+app.get('/api/email-test', async (_req, res) => {
+  const config = {
+    SMTP_HOST: process.env.SMTP_HOST || '(not set)',
+    SMTP_PORT: process.env.SMTP_PORT || '(not set)',
+    SMTP_USER: process.env.SMTP_USER ? '**set**' : '(not set)',
+    SMTP_PASS: process.env.SMTP_PASS ? '**set**' : '(not set)',
+    SMTP_FROM: process.env.SMTP_FROM || '(not set — will use default)',
+    SMTP_SECURE: process.env.SMTP_SECURE || '(not set — defaults to false)',
+  }
+
+  if (!process.env.SMTP_HOST) {
+    return res.json({ status: 'no_config', config, message: 'SMTP_HOST not set — emails go to console only' })
+  }
+
+  // Try to actually connect and send a test
+  try {
+    const nodemailer = await import('nodemailer')
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    })
+    // Verify connection (doesn't send an email, just checks auth)
+    await transporter.verify()
+    res.json({ status: 'ok', config, message: 'SMTP connection verified successfully — emails should work' })
+  } catch (err) {
+    res.json({ status: 'error', config, error: err.message, message: 'SMTP connection failed — check your credentials' })
+  }
+})
+
 // API routes
 app.use('/api/studies', studiesRouter)
 app.use('/api/studies', responsesRouter)
