@@ -1,5 +1,27 @@
 # Q-Method Platform — Progress Log
 
+## 2026-03-19 (session 7)
+
+- **Fixed statement ID display in PyramidSort** — source cards and placed cards now show short sequential labels (S1, S2, S3…) instead of full UUIDs, making them readable and compact
+- **Fixed detail panel layout shift** — replaced the inline detail panel (which pushed the pyramid down on hover) with a fixed-position tooltip that floats above the content without affecting layout
+- **Made email service PostgreSQL-compatible** — added a `safeParse` helper that handles both JSON strings and already-parsed JSONB objects; removed the hacky re-stringify workaround in the response submission route
+- **Cleaned up response route** — the `sendResultsEmail` call now passes the study and response objects directly instead of re-encoding them as JSON strings
+
+## 2026-03-19 (session 6)
+
+- **Redesigned pyramid configuration step** — replaced the single range slider with a richer UI: users now pick a score range (−2 to −6), choose a shape preset (Standard / Flat / Steep), and fine-tune individual column slot counts via +/− buttons on each column
+- **Added distribution presets** — three built-in distribution algorithms: Standard (classic symmetric 1,2,3…3,2,1), Flat (less difference between columns), and Steep (more slots concentrated near center)
+- **Added smart range suggestion** — when the user's statement count matches a standard pyramid for a different range, a one-click suggestion button appears (e.g. "Use −3 to +3 range (matches 13 statements)")
+- **Strengthened backend validation** — added per-column validation in POST /api/studies: each column must have a numeric score and at least 1 slot (prevents malformed configs from custom edits)
+- **Added CSS for new controls** — preset button row, circular +/− adjust buttons on each column, slot count labels, and a dashed suggestion button; all consistent with the existing editorial design system
+
+## 2026-03-18 (session 5)
+
+- **Migrated from SQLite to PostgreSQL** — replaced `better-sqlite3` with the `pg` library using a connection pool; schema uses `JSONB` columns for statements, pyramid config, sort results, and emails (no more manual JSON.stringify/parse on read)
+- **Converted all routes to async** — all Express handlers are now `async` functions using parameterised queries with `$1`-style placeholders; INSERT uses `RETURNING id` instead of `lastInsertRowid`
+- **Updated deployment config** — `render.yaml` now provisions a free PostgreSQL database and auto-wires `DATABASE_URL`; Dockerfile no longer creates a SQLite data directory; created `.env.example` with `DATABASE_URL` as the primary required config
+- **Updated README** — reflects PostgreSQL setup for local dev, Render deployment, and Docker; removed SQLite volume mount instructions; added note about Render's 90-day free Postgres expiry
+
 ## 2026-03-18 (session 4)
 
 - **Deployment infrastructure** — created `render.yaml` (Render Blueprint) for one-click deploy with 1 GB persistent disk for SQLite, plus a multi-stage `Dockerfile` for Railway/Fly.io/self-hosting

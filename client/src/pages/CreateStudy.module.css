@@ -250,6 +250,36 @@
   accent-color: var(--color-accent);
 }
 
+.presetRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.presetLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink-light);
+}
+
+.presetBtn {
+  padding: 0.4rem 0.9rem;
+  background: none;
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.presetBtn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-light, rgba(0, 0, 0, 0.02));
+}
+
 .pyramidPreview {
   display: flex;
   align-items: flex-end;
@@ -278,6 +308,42 @@
   background: var(--color-paper-warm);
   border: 1.5px solid var(--color-paper-dark);
   border-radius: 3px;
+  transition: background 0.15s ease;
+}
+
+.slotAdjust {
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1.5px solid var(--color-paper-dark);
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+.slotAdjust:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-light, rgba(0, 0, 0, 0.02));
+}
+
+.slotAdjust:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.slotAdjustMinus {
+  margin-bottom: 0;
+  margin-top: 4px;
 }
 
 .pyramidScore {
@@ -285,6 +351,12 @@
   font-weight: 600;
   color: var(--color-ink-muted);
   margin-top: 4px;
+}
+
+.slotCount {
+  font-size: 0.65rem;
+  color: var(--color-ink-muted);
+  opacity: 0.6;
 }
 
 .pyramidInfo {
@@ -295,6 +367,24 @@
 
 .mismatchWarn {
   color: var(--color-error);
+}
+
+.suggestBtn {
+  display: block;
+  margin: var(--space-sm) auto 0;
+  padding: 0.45rem 1rem;
+  background: none;
+  border: 1.5px dashed var(--color-accent);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.suggestBtn:hover {
+  background: var(--color-accent);
+  color: #fff;
 }
 
 /* --- Email --- */

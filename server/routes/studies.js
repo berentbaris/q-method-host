@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import crypto from 'crypto'
-import db from '../db.js'
+import { queryOne, query, execute } from '../db.js'
 
 const router = Router()
 
@@ -19,21 +19,21 @@ function generateCode() {
 }
 
 // Ensure the generated code doesn't already exist
-function uniqueCode() {
-  const exists = db.prepare('SELECT 1 FROM studies WHERE id = ?')
+async function uniqueCode() {
   let code
   let attempts = 0
   do {
     code = generateCode()
     attempts++
     if (attempts > 100) throw new Error('Failed to generate unique study code')
-  } while (exists.get(code))
-  return code
+    const existing = await queryOne('SELECT 1 FROM studies WHERE id = $1', [code])
+    if (!existing) return code
+  } while (true)
 }
 
 // ---- POST /api/studies — Create a new study ----
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { title, description, statements, pyramidConfig, organizerEmails } = req.body
 
@@ -47,6 +47,15 @@ router.post('/', (req, res) => {
     if (!Array.isArray(pyramidConfig) || pyramidConfig.length === 0) {
       return res.status(400).json({ error: 'Pyramid configuration is required' })
     }
+    // Validate each column entry
+    for (const col of pyramidConfig) {
+      if (typeof col.score !== 'number' || !Number.isFinite(col.score)) {
+        return res.status(400).json({ error: 'Each pyramid column must have a numeric score' })
+      }
+      if (!Number.isInteger(col.slots) || col.slots < 1) {
+        return res.status(400).json({ error: 'Each pyramid column must have at least 1 slot' })
+      }
+    }
     if (!Array.isArray(organizerEmails) || organizerEmails.filter(Boolean).length === 0) {
       return res.status(400).json({ error: 'At least one organizer email is required' })
     }
@@ -59,20 +68,19 @@ router.post('/', (req, res) => {
       })
     }
 
-    const code = uniqueCode()
+    const code = await uniqueCode()
 
-    const insert = db.prepare(`
-      INSERT INTO studies (id, title, description, statements, pyramid_config, organizer_emails)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `)
-
-    insert.run(
-      code,
-      title.trim(),
-      (description || '').trim(),
-      JSON.stringify(statements),
-      JSON.stringify(pyramidConfig),
-      JSON.stringify(organizerEmails.filter(Boolean)),
+    await execute(
+      `INSERT INTO studies (id, title, description, statements, pyramid_config, organizer_emails)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        code,
+        title.trim(),
+        (description || '').trim(),
+        JSON.stringify(statements),
+        JSON.stringify(pyramidConfig),
+        JSON.stringify(organizerEmails.filter(Boolean)),
+      ]
     )
 
     res.status(201).json({
@@ -88,23 +96,24 @@ router.post('/', (req, res) => {
 
 // ---- GET /api/studies/:code — Fetch study details (for participants) ----
 
-router.get('/:code', (req, res) => {
+router.get('/:code', async (req, res) => {
   try {
     const { code } = req.params
 
-    const row = db.prepare('SELECT * FROM studies WHERE id = ?').get(code.toUpperCase())
+    const row = await queryOne('SELECT * FROM studies WHERE id = $1', [code.toUpperCase()])
 
     if (!row) {
       return res.status(404).json({ error: 'Study not found. Please check the code and try again.' })
     }
 
     // Return participant-safe data (no organizer emails)
+    // With JSONB columns, pg returns parsed objects already
     res.json({
       code: row.id,
       title: row.title,
       description: row.description,
-      statements: JSON.parse(row.statements),
-      pyramidConfig: JSON.parse(row.pyramid_config),
+      statements: row.statements,
+      pyramidConfig: row.pyramid_config,
       createdAt: row.created_at,
     })
   } catch (err) {
@@ -115,31 +124,32 @@ router.get('/:code', (req, res) => {
 
 // ---- GET /api/studies/:code/results — Fetch all responses (for organizers) ----
 
-router.get('/:code/results', (req, res) => {
+router.get('/:code/results', async (req, res) => {
   try {
     const { code } = req.params
 
-    const study = db.prepare('SELECT * FROM studies WHERE id = ?').get(code.toUpperCase())
+    const study = await queryOne('SELECT * FROM studies WHERE id = $1', [code.toUpperCase()])
     if (!study) {
       return res.status(404).json({ error: 'Study not found' })
     }
 
-    const responses = db.prepare(
-      'SELECT * FROM responses WHERE study_id = ? ORDER BY submitted_at ASC'
-    ).all(code.toUpperCase())
+    const responses = await query(
+      'SELECT * FROM responses WHERE study_id = $1 ORDER BY submitted_at ASC',
+      [code.toUpperCase()]
+    )
 
     res.json({
       study: {
         code: study.id,
         title: study.title,
         description: study.description,
-        statements: JSON.parse(study.statements),
-        pyramidConfig: JSON.parse(study.pyramid_config),
+        statements: study.statements,
+        pyramidConfig: study.pyramid_config,
       },
       responses: responses.map(r => ({
         id: r.id,
-        sortResult: JSON.parse(r.sort_result),
-        explanations: JSON.parse(r.explanations),
+        sortResult: r.sort_result,
+        explanations: r.explanations,
         submittedAt: r.submitted_at,
       })),
       totalResponses: responses.length,

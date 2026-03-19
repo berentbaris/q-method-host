@@ -4,6 +4,7 @@ import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync } from 'fs'
+import { initDatabase } from './db.js'
 import studiesRouter from './routes/studies.js'
 import responsesRouter from './routes/responses.js'
 
@@ -56,9 +57,21 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' })
 })
 
-app.listen(PORT, () => {
-  console.log(`Q-Method server listening on http://localhost:${PORT}`)
-  if (IS_PRODUCTION) {
-    console.log(`Serving client from ${CLIENT_DIST}`)
+// ---- Start server after database is ready ----
+
+async function start() {
+  try {
+    await initDatabase()
+    app.listen(PORT, () => {
+      console.log(`Q-Method server listening on http://localhost:${PORT}`)
+      if (IS_PRODUCTION) {
+        console.log(`Serving client from ${CLIENT_DIST}`)
+      }
+    })
+  } catch (err) {
+    console.error('Failed to start server:', err)
+    process.exit(1)
   }
-})
+}
+
+start()

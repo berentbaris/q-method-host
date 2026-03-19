@@ -27,9 +27,6 @@ COPY --from=builder /app/client/dist/ ./client/dist/
 # Install production server deps only
 RUN cd server && npm ci --omit=dev
 
-# SQLite data directory (mount a volume here for persistence)
-RUN mkdir -p /app/server/data
-
 ENV NODE_ENV=production
 ENV PORT=4000
 

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import db from '../db.js'
+import { queryOne, query, execute } from '../db.js'
 import { sendResultsEmail } from '../email.js'
 
 const router = Router()
@@ -30,7 +30,7 @@ setInterval(() => {
 
 // ---- POST /api/studies/:code/responses — Submit a participant's Q-sort ----
 
-router.post('/:code/responses', (req, res) => {
+router.post('/:code/responses', async (req, res) => {
   // Rate limit check
   const ip = req.ip || req.connection?.remoteAddress || 'unknown'
   if (!checkRateLimit(ip)) {
@@ -42,7 +42,7 @@ router.post('/:code/responses', (req, res) => {
     const { sortResult, explanations } = req.body
 
     // Verify the study exists
-    const study = db.prepare('SELECT * FROM studies WHERE id = ?').get(code.toUpperCase())
+    const study = await queryOne('SELECT * FROM studies WHERE id = $1', [code.toUpperCase()])
     if (!study) {
       return res.status(404).json({ error: 'Study not found' })
     }
@@ -52,8 +52,9 @@ router.post('/:code/responses', (req, res) => {
       return res.status(400).json({ error: 'sortResult is required and must be an object' })
     }
 
-    const statements = JSON.parse(study.statements)
-    const pyramidConfig = JSON.parse(study.pyramid_config)
+    // With JSONB, pg returns parsed objects already
+    const statements = study.statements
+    const pyramidConfig = study.pyramid_config
 
     // Check that every statement has been placed
     const placedIds = Object.keys(sortResult)
@@ -88,33 +89,37 @@ router.post('/:code/responses', (req, res) => {
       }
     }
 
-    const insert = db.prepare(`
-      INSERT INTO responses (study_id, sort_result, explanations)
-      VALUES (?, ?, ?)
-    `)
-
-    const result = insert.run(
-      code.toUpperCase(),
-      JSON.stringify(sortResult),
-      JSON.stringify(sanitizedExplanations),
+    // Insert and get the new row's ID
+    const { rows: insertedRows } = await execute(
+      `INSERT INTO responses (study_id, sort_result, explanations)
+       VALUES ($1, $2, $3)
+       RETURNING id`,
+      [
+        code.toUpperCase(),
+        JSON.stringify(sortResult),
+        JSON.stringify(sanitizedExplanations),
+      ]
     )
 
     // Count how many responses this study now has (for the email subject)
-    const responseCount = db.prepare(
-      'SELECT COUNT(*) as count FROM responses WHERE study_id = ?'
-    ).get(code.toUpperCase()).count
+    const countRow = await queryOne(
+      'SELECT COUNT(*) as count FROM responses WHERE study_id = $1',
+      [code.toUpperCase()]
+    )
+    const responseCount = countRow ? parseInt(countRow.count, 10) : '?'
 
     // Send email to organizers (non-blocking — don't fail the request if email fails)
+    // The email module now handles both parsed objects and JSON strings (JSONB-safe)
     sendResultsEmail(study, {
-      sort_result: JSON.stringify(sortResult),
-      explanations: JSON.stringify(sanitizedExplanations),
+      sort_result: sortResult,
+      explanations: sanitizedExplanations,
       submitted_at: new Date().toISOString(),
     }, responseCount).catch(err => {
       console.error('[email] Error sending results email:', err.message)
     })
 
     res.status(201).json({
-      id: result.lastInsertRowid,
+      id: insertedRows[0].id,
       message: 'Response recorded successfully. Thank you!',
     })
   } catch (err) {

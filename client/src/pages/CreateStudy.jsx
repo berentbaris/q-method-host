@@ -334,23 +334,70 @@ function StepStatements({ study, onChange }) {
 }
 
 function StepPyramid({ study, onChange }) {
-  // Default symmetric pyramid from -4 to +4
-  const [range, setRange] = useState(4)
+  const [range, setRange] = useState(() => {
+    // Infer range from existing config, or default to 4
+    if (study.pyramidConfig.length > 0) {
+      return Math.max(...study.pyramidConfig.map(c => Math.abs(c.score)))
+    }
+    return 4
+  })
 
-  const generatePyramid = (r) => {
-    // Standard Q-sort distribution: 1,2,3,4,5…5,4,3,2,1 for range r
+  // Distribution presets — each returns a slots-per-column function
+  const distributions = {
+    standard: (r, score) => r - Math.abs(score) + 1,
+    flat: (r, score) => {
+      // Flatter distribution — less difference between center and extremes
+      const distance = Math.abs(score)
+      return Math.max(1, r - distance + 1 - Math.floor(distance / 2))
+    },
+    steep: (r, score) => {
+      // Steeper distribution — big center, tiny extremes
+      const distance = Math.abs(score)
+      if (distance === r) return 1
+      return Math.max(1, r - distance + 1 + Math.floor((r - distance) / 2))
+    },
+  }
+
+  const generatePyramid = (r, distribution = 'standard') => {
+    const fn = distributions[distribution]
     const config = []
     for (let score = -r; score <= r; score++) {
-      const distance = Math.abs(score)
-      const slots = r - distance + 1
-      config.push({ score, slots })
+      config.push({ score, slots: fn(r, score) })
     }
     return config
+  }
+
+  // Try to find the best range for the current statement count
+  const suggestRange = () => {
+    const n = study.statements.length
+    if (n < 1) return null
+    // Try each range 2–6, find best match
+    for (let r = 2; r <= 6; r++) {
+      const total = generatePyramid(r).reduce((s, c) => s + c.slots, 0)
+      if (total === n) return r
+    }
+    return null
   }
 
   const handleRangeChange = (newRange) => {
     setRange(newRange)
     onChange({ ...study, pyramidConfig: generatePyramid(newRange) })
+  }
+
+  const handlePreset = (distribution) => {
+    onChange({ ...study, pyramidConfig: generatePyramid(range, distribution) })
+  }
+
+  // Adjust a single column's slot count
+  const adjustSlots = (score, delta) => {
+    const updated = study.pyramidConfig.map(col => {
+      if (col.score === score) {
+        const newSlots = Math.max(1, col.slots + delta)
+        return { ...col, slots: newSlots }
+      }
+      return col
+    })
+    onChange({ ...study, pyramidConfig: updated })
   }
 
   // Initialize on first render if empty
@@ -359,15 +406,20 @@ function StepPyramid({ study, onChange }) {
   }
 
   const totalSlots = study.pyramidConfig.reduce((sum, col) => sum + col.slots, 0)
+  const stmtCount = study.statements.length
+  const diff = totalSlots - stmtCount
+  const suggested = suggestRange()
 
   return (
     <div className={styles.stepBlock}>
       <h2 className={styles.stepTitle}>Pyramid configuration</h2>
       <p className={styles.stepHint}>
-        Choose the range of scores. The pyramid shape is generated automatically —
-        you can adjust slot counts later if needed.
+        Set the score range, pick a shape preset, then fine-tune individual columns
+        by clicking the +/− buttons. The total number of slots must equal your
+        statement count ({stmtCount}).
       </p>
 
+      {/* Score range slider */}
       <label className={styles.fieldLabel}>
         Score range: −{range} to +{range}
         <input
@@ -380,29 +432,82 @@ function StepPyramid({ study, onChange }) {
         />
       </label>
 
-      {/* Pyramid preview */}
+      {/* Distribution presets */}
+      <div className={styles.presetRow}>
+        <span className={styles.presetLabel}>Shape:</span>
+        <button
+          className={styles.presetBtn}
+          onClick={() => handlePreset('standard')}
+          title="Even progression from extremes to center"
+        >
+          Standard
+        </button>
+        <button
+          className={styles.presetBtn}
+          onClick={() => handlePreset('flat')}
+          title="Flatter — less difference between columns"
+        >
+          Flat
+        </button>
+        <button
+          className={styles.presetBtn}
+          onClick={() => handlePreset('steep')}
+          title="Steeper — more slots near the center"
+        >
+          Steep
+        </button>
+      </div>
+
+      {/* Interactive pyramid preview */}
       <div className={styles.pyramidPreview}>
         {study.pyramidConfig.map(col => (
           <div key={col.score} className={styles.pyramidCol}>
+            <button
+              className={styles.slotAdjust}
+              onClick={() => adjustSlots(col.score, 1)}
+              title={`Add a slot to column ${col.score}`}
+            >
+              +
+            </button>
             <div className={styles.pyramidSlots}>
               {Array.from({ length: col.slots }).map((_, i) => (
                 <div key={i} className={styles.pyramidSlot} />
               ))}
             </div>
+            <button
+              className={`${styles.slotAdjust} ${styles.slotAdjustMinus}`}
+              onClick={() => adjustSlots(col.score, -1)}
+              disabled={col.slots <= 1}
+              title={`Remove a slot from column ${col.score}`}
+            >
+              −
+            </button>
             <span className={styles.pyramidScore}>
               {col.score > 0 ? '+' : ''}{col.score}
             </span>
+            <span className={styles.slotCount}>{col.slots}</span>
           </div>
         ))}
       </div>
+
+      {/* Info line + suggestion */}
       <p className={styles.pyramidInfo}>
-        {totalSlots} total slots · {study.statements.length} statements
-        {study.statements.length > 0 && totalSlots !== study.statements.length && (
+        {totalSlots} total slots · {stmtCount} statement{stmtCount !== 1 ? 's' : ''}
+        {stmtCount > 0 && diff !== 0 && (
           <span className={styles.mismatchWarn}>
-            {' '}(should match — adjust range or add/remove statements)
+            {' '}— {diff > 0 ? `${diff} too many slots` : `${Math.abs(diff)} too few slots`}
           </span>
         )}
       </p>
+
+      {stmtCount > 0 && diff !== 0 && suggested !== null && suggested !== range && (
+        <button
+          className={styles.suggestBtn}
+          onClick={() => handleRangeChange(suggested)}
+        >
+          Use −{suggested} to +{suggested} range (matches {stmtCount} statements)
+        </button>
+      )}
     </div>
   )
 }

@@ -17,6 +17,16 @@ export default function PyramidSort({ triageResult, pyramidConfig, onComplete })
   ]
   const totalSlots = pyramidConfig.reduce((sum, col) => sum + col.slots, 0)
 
+  // Build a short display number for each statement (S1, S2, S3…)
+  // This avoids showing full UUIDs like "S993f408e-5579-4697…"
+  const shortLabel = useRef({})
+  if (Object.keys(shortLabel.current).length === 0) {
+    allStatements.forEach((s, i) => {
+      shortLabel.current[s.id] = i + 1
+    })
+  }
+  const label = (id) => shortLabel.current[id] || '?'
+
   // pyramid[score] = [statement, ...]
   const [pyramid, setPyramid] = useState(() => {
     const p = {}
@@ -26,6 +36,7 @@ export default function PyramidSort({ triageResult, pyramidConfig, onComplete })
   const [selectedCard, setSelectedCard] = useState(null) // statement object
   const [hoveredCol, setHoveredCol] = useState(null)     // score being hovered over during drag
   const [detailCard, setDetailCard] = useState(null)      // card to show in detail panel
+  const [detailPos, setDetailPos] = useState({ x: 0, y: 0 }) // tooltip position
 
   const dragRef = useRef({ active: false, statementId: null, startX: 0, startY: 0 })
   const ghostRef = useRef(null)
@@ -243,11 +254,15 @@ export default function PyramidSort({ triageResult, pyramidConfig, onComplete })
                       window.addEventListener('pointermove', onMove)
                       window.addEventListener('pointerup', onUp)
                     }}
-                    onMouseEnter={() => setDetailCard(statement)}
+                    onMouseEnter={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      setDetailPos({ x: rect.left, y: rect.bottom + 6 })
+                      setDetailCard(statement)
+                    }}
                     onMouseLeave={() => setDetailCard(null)}
                     title={statement.text}
                   >
-                    <span className={styles.sourceCardNum}>S{statement.id}</span>
+                    <span className={styles.sourceCardNum}>S{label(statement.id)}</span>
                     <span className={styles.sourceCardText}>
                       {statement.text.length > 60
                         ? statement.text.slice(0, 60) + '…'
@@ -264,10 +279,13 @@ export default function PyramidSort({ triageResult, pyramidConfig, onComplete })
         })}
       </div>
 
-      {/* Detail panel: shows full text of hovered card */}
+      {/* Detail tooltip: shows full text of hovered card (fixed position, no layout shift) */}
       {detailCard && (
-        <div className={styles.detailPanel}>
-          <span className={styles.detailNum}>Statement {detailCard.id}</span>
+        <div
+          className={styles.detailTooltip}
+          style={{ left: `${detailPos.x}px`, top: `${detailPos.y}px` }}
+        >
+          <span className={styles.detailNum}>Statement {label(detailCard.id)}</span>
           <p className={styles.detailText}>{detailCard.text}</p>
         </div>
       )}
@@ -307,11 +325,15 @@ export default function PyramidSort({ triageResult, pyramidConfig, onComplete })
                               e.stopPropagation()
                               handlePlacedCardClick(card)
                             }}
-                            onMouseEnter={() => setDetailCard(card)}
+                            onMouseEnter={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect()
+                              setDetailPos({ x: rect.left, y: rect.bottom + 6 })
+                              setDetailCard(card)
+                            }}
                             onMouseLeave={() => setDetailCard(null)}
-                            title={`S${card.id}: ${card.text} — click to remove`}
+                            title={`S${label(card.id)}: ${card.text} — click to remove`}
                           >
-                            <span className={styles.placedNum}>S{card.id}</span>
+                            <span className={styles.placedNum}>S{label(card.id)}</span>
                             <span className={styles.placedText}>
                               {card.text.length > 28
                                 ? card.text.slice(0, 28) + '…'
@@ -347,7 +369,7 @@ export default function PyramidSort({ triageResult, pyramidConfig, onComplete })
             Place all {totalSlots} statements to continue.
             {selectedCard && (
               <span>
-                {' '}Selected: <strong>S{selectedCard.id}</strong> — click a column to place it, or click the card again to deselect.
+                {' '}Selected: <strong>S{label(selectedCard.id)}</strong> — click a column to place it, or click the card again to deselect.
               </span>
             )}
           </p>

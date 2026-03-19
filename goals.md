@@ -78,21 +78,30 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Buy Me a Coffee widget
 - [x] Error handling, loading states, edge cases
 
-### Milestone 4 — Launch-ready
+### Milestone 4 — Launch-ready ✅
 - [x] Deploy configuration (Render Blueprint + Dockerfile + production server)
 - [x] Test full flow end-to-end (code review)
 - [x] README with setup instructions
-- [ ] Push to GitHub and deploy to Render (user action)
-- [ ] Smoke-test deployed app with a real study
+- [x] Push to GitHub and deploy to Render
+- [x] Smoke-test deployed app with a real study
+
+### Milestone 5 — Post-launch updates
+- [x] Switch from SQLite to PostgreSQL (persistent data across deploys)
+- [x] Give users more freedom when defining pyramid configuration during study creation
+- [x] Fix email service for PostgreSQL JSONB compatibility (removed re-stringify workaround, added safeParse helper)
+- [x] Fix pyramid sort page (Step 2: Rank) issues:
+  - [x] Statement IDs too long — now displays short sequential numbers (S1, S2, S3…) instead of full UUIDs
+  - [x] Hovering over statements triggers a fixed-position tooltip instead of an inline panel (no more layout shifts)
+- [ ] Implement the emailing feature (configure SMTP on Render — set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS env vars)
 
 ## Current Status
 > Update this section each session so Claude knows where to pick up.
 
-**Last updated**: 2026-03-18
-**Active milestone**: Milestone 4
-**Last completed**: Deployment infrastructure — Render Blueprint (`render.yaml`), Dockerfile, root `package.json` with unified build/start scripts, server updated to serve client build in production, comprehensive README with local dev + Render + Docker instructions, `.gitignore` files, full end-to-end code review
-**Next task**: Push to GitHub and deploy to Render (user action — see README for steps)
-**Blockers / decisions needed**: The project is ready to deploy. The user needs to: (1) push to a GitHub repo, (2) connect it to Render via the Blueprint, (3) optionally configure SMTP env vars for email. npm registry is blocked in the dev VM — run `npm install` at the root on your own machine (the `postinstall` script handles both client and server). Copy `server/.env.example` to `server/.env` and fill in SMTP credentials to enable email sending (without config, emails are printed to console).
+**Last updated**: 2026-03-19
+**Active milestone**: Milestone 5
+**Last completed**: Fixed pyramid sort UI issues (short statement labels, tooltip instead of inline detail panel) and made email service PostgreSQL-compatible
+**Next task**: Implement the emailing feature (configure SMTP env vars on Render — the code is ready, just needs SMTP_HOST/PORT/USER/PASS set in Render dashboard)
+**Blockers / decisions needed**: To enable email delivery, the organizer needs to choose an SMTP provider (e.g. Resend, Gmail SMTP, or Mailgun) and add the credentials as environment variables on Render. The code handles everything else automatically.
 
 ## Conventions & Preferences
 - Use functional React components with hooks

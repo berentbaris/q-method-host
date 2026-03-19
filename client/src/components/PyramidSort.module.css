@@ -160,15 +160,19 @@
   white-space: nowrap;
 }
 
-/* --- Detail panel (hovered card full text) --- */
+/* --- Detail tooltip (hovered card full text — fixed position, no layout shift) --- */
 
-.detailPanel {
+.detailTooltip {
+  position: fixed;
+  z-index: 1000;
   background: #fff;
   border: 1.5px solid var(--color-paper-dark);
   border-radius: 6px;
   padding: var(--space-sm) var(--space-md);
-  margin-bottom: var(--space-lg);
-  animation: fadeSlide 0.15s ease;
+  max-width: 22rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  animation: fadeSlide 0.12s ease;
 }
 
 @keyframes fadeSlide {

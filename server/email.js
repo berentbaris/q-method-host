@@ -40,17 +40,21 @@ function getTransporter() {
 
 const FROM = process.env.SMTP_FROM || 'Q-Sort Platform <noreply@qsort.local>'
 
+// Helper: safely parse JSON — handles both strings and already-parsed objects (for JSONB columns)
+function safeParse(val) {
+  if (typeof val === 'string') {
+    try { return JSON.parse(val) } catch { return val }
+  }
+  return val
+}
+
 // ---- Format a single response into a readable email ----
 
 function formatResultsEmail(study, response) {
-  const statements = JSON.parse(study.statements)
-  const pyramidConfig = JSON.parse(study.pyramid_config)
-  const sortResult = typeof response.sort_result === 'string'
-    ? JSON.parse(response.sort_result)
-    : response.sort_result
-  const explanations = typeof response.explanations === 'string'
-    ? JSON.parse(response.explanations)
-    : response.explanations
+  const statements = safeParse(study.statements)
+  const pyramidConfig = safeParse(study.pyramid_config)
+  const sortResult = safeParse(response.sort_result)
+  const explanations = safeParse(response.explanations)
 
   // Build a lookup: statement id → text
   const stmtMap = {}
@@ -192,7 +196,7 @@ function escapeHtml(str) {
 // ---- Send results email to all organizers ----
 
 export async function sendResultsEmail(study, response) {
-  const organizerEmails = JSON.parse(study.organizer_emails)
+  const organizerEmails = safeParse(study.organizer_emails)
   if (!organizerEmails.length) {
     console.log('[email] No organizer emails configured — skipping')
     return
