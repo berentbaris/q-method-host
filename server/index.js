@@ -21,39 +21,56 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-// Email diagnostic — lets you test whether SMTP is working
-// Visit /api/email-test to see config status and send a test email
+// Email diagnostic — visit /api/email-test to check config
 app.get('/api/email-test', async (_req, res) => {
   const config = {
+    EMAIL_FROM: process.env.EMAIL_FROM || process.env.SMTP_FROM || '(not set — will use default)',
+    RESEND_API_KEY: process.env.RESEND_API_KEY ? '***set***' : '(not set)',
     SMTP_HOST: process.env.SMTP_HOST || '(not set)',
     SMTP_PORT: process.env.SMTP_PORT || '(not set)',
-    SMTP_USER: process.env.SMTP_USER ? '**set**' : '(not set)',
-    SMTP_PASS: process.env.SMTP_PASS ? '**set**' : '(not set)',
-    SMTP_FROM: process.env.SMTP_FROM || '(not set — will use default)',
-    SMTP_SECURE: process.env.SMTP_SECURE || '(not set — defaults to false)',
+    SMTP_USER: process.env.SMTP_USER ? '***set***' : '(not set)',
+    SMTP_PASS: process.env.SMTP_PASS ? '***set***' : '(not set)',
   }
 
-  if (!process.env.SMTP_HOST) {
-    return res.json({ status: 'no_config', config, message: 'SMTP_HOST not set — emails go to console only' })
+  // Determine method
+  let method = 'console'
+  if (process.env.RESEND_API_KEY) method = 'resend'
+  else if (process.env.SMTP_HOST) method = 'smtp'
+
+  if (method === 'console') {
+    return res.json({ status: 'no_config', method, config, message: 'No email provider configured — emails go to console only. Set RESEND_API_KEY or SMTP_HOST.' })
   }
 
-  // Try to actually connect and send a test
+  if (method === 'resend') {
+    // Test Resend API by calling their domains endpoint (lightweight check)
+    try {
+      const testRes = await fetch('https://api.resend.com/domains', {
+        headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
+      })
+      if (!testRes.ok) {
+        const body = await testRes.text()
+        return res.json({ status: 'error', method, config, error: `Resend API returned ${testRes.status}: ${body}`, message: 'Resend API key rejected — check your key' })
+      }
+      const domains = await testRes.json()
+      return res.json({ status: 'ok', method, config, domains: domains.data, message: 'Resend API key valid — emails should work. Make sure EMAIL_FROM matches a verified domain.' })
+    } catch (err) {
+      return res.json({ status: 'error', method, config, error: err.message, message: 'Could not reach Resend API' })
+    }
+  }
+
+  // SMTP test
   try {
     const nodemailer = await import('nodemailer')
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587', 10),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+      secure: process.env.SMTP_PORT === '465',
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     })
-    // Verify connection (doesn't send an email, just checks auth)
     await transporter.verify()
-    res.json({ status: 'ok', config, message: 'SMTP connection verified successfully — emails should work' })
+    res.json({ status: 'ok', method, config, message: 'SMTP connection verified — emails should work' })
   } catch (err) {
-    res.json({ status: 'error', config, error: err.message, message: 'SMTP connection failed — check your credentials' })
+    res.json({ status: 'error', method, config, error: err.message, message: 'SMTP connection failed' })
   }
 })
 

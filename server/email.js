@@ -1,29 +1,58 @@
 /*
   Email service for Q-Method platform.
 
-  Uses Nodemailer to send formatted results to organizers.
-  Configure via environment variables:
-    SMTP_HOST     — e.g. smtp.gmail.com, smtp.resend.com
-    SMTP_PORT     — e.g. 587 (TLS) or 465 (SSL)
-    SMTP_USER     — your SMTP username or API key
-    SMTP_PASS     — your SMTP password or API key
-    SMTP_FROM     — sender address, e.g. "Q-Sort <noreply@yourdomain.com>"
-    SMTP_SECURE   — "true" for port 465, omit or "false" for STARTTLS
+  Supports two modes:
+    1. Resend HTTP API (recommended for cloud hosts that block SMTP ports)
+       Set RESEND_API_KEY and EMAIL_FROM
+    2. SMTP via Nodemailer (for Gmail, Zoho, etc.)
+       Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM
 
-  If SMTP_HOST is not set, emails are logged to console instead of sent.
-  This lets the app run in "demo mode" without email config.
+  If neither is configured, emails are logged to console (demo mode).
 */
+
+// Helper: safely parse JSON — handles both strings and already-parsed objects
+function safeParse(val) {
+  if (typeof val === 'string') {
+    try { return JSON.parse(val) } catch { return val }
+  }
+  return val
+}
+
+const FROM = process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Q-Sort Platform <noreply@qsort.local>'
+
+// ---- Send via Resend HTTP API (no SMTP ports needed) ----
+
+async function sendViaResend(to, subject, text, html) {
+  const apiKey = process.env.RESEND_API_KEY
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ from: FROM, to: [to], subject, text, html }),
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`Resend API error ${res.status}: ${body}`)
+  }
+
+  const data = await res.json()
+  return data.id
+}
+
+// ---- Send via SMTP (Nodemailer) ----
 
 import { createTransport } from 'nodemailer'
 
-// Build transporter lazily (only when first email is sent)
 let _transporter = null
 
 function getTransporter() {
   if (_transporter) return _transporter
 
   const host = process.env.SMTP_HOST
-  if (!host) return null // No email config — will use console fallback
+  if (!host) return null
 
   _transporter = createTransport({
     host,
@@ -38,14 +67,20 @@ function getTransporter() {
   return _transporter
 }
 
-const FROM = process.env.SMTP_FROM || 'Q-Sort Platform <noreply@qsort.local>'
+async function sendViaSmtp(to, subject, text, html) {
+  const transporter = getTransporter()
+  if (!transporter) return null
 
-// Helper: safely parse JSON — handles both strings and already-parsed objects (for JSONB columns)
-function safeParse(val) {
-  if (typeof val === 'string') {
-    try { return JSON.parse(val) } catch { return val }
-  }
-  return val
+  const info = await transporter.sendMail({ from: FROM, to, subject, text, html })
+  return info.messageId
+}
+
+// ---- Determine which method to use ----
+
+function getEmailMethod() {
+  if (process.env.RESEND_API_KEY) return 'resend'
+  if (process.env.SMTP_HOST) return 'smtp'
+  return 'console'
 }
 
 // ---- Format a single response into a readable email ----
@@ -206,12 +241,11 @@ export async function sendResultsEmail(study, response) {
   const responseCount = arguments[2] || '?'
   const subject = `New Q-Sort response for "${study.title}" (#${responseCount})`
 
-  const transporter = getTransporter()
+  const method = getEmailMethod()
 
-  if (!transporter) {
-    // Demo mode: log to console instead of sending
+  if (method === 'console') {
     console.log('\n' + '='.repeat(60))
-    console.log('[email] SMTP not configured — printing email to console')
+    console.log('[email] No email provider configured — printing to console')
     console.log(`[email] To: ${organizerEmails.join(', ')}`)
     console.log(`[email] Subject: ${subject}`)
     console.log('='.repeat(60))
@@ -220,19 +254,17 @@ export async function sendResultsEmail(study, response) {
     return
   }
 
-  // Send to each organizer
   const results = []
   for (const email of organizerEmails) {
     try {
-      const info = await transporter.sendMail({
-        from: FROM,
-        to: email,
-        subject,
-        text,
-        html,
-      })
-      console.log(`[email] Sent to ${email}: ${info.messageId}`)
-      results.push({ email, success: true, messageId: info.messageId })
+      let messageId
+      if (method === 'resend') {
+        messageId = await sendViaResend(email, subject, text, html)
+      } else {
+        messageId = await sendViaSmtp(email, subject, text, html)
+      }
+      console.log(`[email] Sent to ${email} via ${method}: ${messageId}`)
+      results.push({ email, success: true, messageId })
     } catch (err) {
       console.error(`[email] Failed to send to ${email}:`, err.message)
       results.push({ email, success: false, error: err.message })
@@ -242,4 +274,7 @@ export async function sendResultsEmail(study, response) {
   return results
 }
 
-export default { sendResultsEmail }
+// Export method detection for the diagnostic endpoint
+export { getEmailMethod }
+
+export default { sendResultsEmail, getEmailMethod }
