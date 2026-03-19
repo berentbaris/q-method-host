@@ -92,16 +92,24 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Fix pyramid sort page (Step 2: Rank) issues:
   - [x] Statement IDs too long — now displays short sequential numbers (S1, S2, S3…) instead of full UUIDs
   - [x] Hovering over statements triggers a fixed-position tooltip instead of an inline panel (no more layout shifts)
-- [ ] Implement the emailing feature (configure SMTP on Render — set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS env vars)
+- [x] Implement the emailing feature (Resend HTTP API — SMTP ports blocked on Render, so switched to Resend's REST API over HTTPS)
+
+### Milestone 6 — Final touches
+- [x] Ask participant's name before the "Begin sorting" button; include name in the results email
+- [x] Switch from Buy Me a Coffee to GitHub Sponsors — update links and text to say "Support development"
+- [x] Include "Support development" GitHub Sponsors link at the bottom of results emails
+- [x] Remove the dead "View all responses" link from the bottom of results emails
+- [x] Edit landing page text to subtly emphasize that the tool is free (other Q-sort tools are paid)
+- [x] Add Polia company logo next to the "Q Method" text in the header (top-left, on every page); logo links to polia.nl
 
 ## Current Status
 > Update this section each session so Claude knows where to pick up.
 
-**Last updated**: 2026-03-19
-**Active milestone**: Milestone 5
-**Last completed**: Reverted from PostgreSQL back to SQLite — simpler, no 90-day database expiry, persistent disk keeps data across deploys
-**Next task**: Implement the emailing feature (configure SMTP env vars on Render — the code is ready, just needs SMTP_HOST/PORT/USER/PASS set in Render dashboard)
-**Blockers / decisions needed**: After pushing the SQLite revert, re-deploy on Render via Blueprint so it provisions the persistent disk. Delete the old Postgres database from Render if it still exists. Any existing study data from Postgres won't carry over — fresh start.
+**Last updated**: 2026-03-20
+**Active milestone**: Milestone 6 — complete
+**Last completed**: All Milestone 6 tasks — participant names, GitHub Sponsors, Polia branding, landing page copy
+**Next task**: None — all milestones complete. Ship it!
+**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Replace `#github-sponsors` placeholder with real URL once company registration is done (search codebase for `#github-sponsors`).
 
 ## Conventions & Preferences
 - Use functional React components with hooks

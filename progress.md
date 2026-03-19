@@ -1,5 +1,21 @@
 # Q-Method Platform — Progress Log
 
+## 2026-03-20 (session 10)
+
+- **Added participant name field** — name input appears on the study intro page before "Begin sorting"; name is stored in the `responses` table (`participant_name` column), included in email subject line and email body (both HTML and plain text)
+- **Switched to GitHub Sponsors** — replaced Buy Me a Coffee floating button and footer link with "Support development" linking to `#github-sponsors` (placeholder); updated CoffeeButton icon from ☕ to ♡
+- **Fixed email footer** — removed dead "View all responses" link, added "Support development" GitHub Sponsors link; added participant name to email meta line
+- **Updated landing page copy** — hero subtitle now reads "no accounts, no installs, no fees. Completely free, forever." to subtly differentiate from paid Q-sort tools
+- **Added Polia logo to header** — logo sits left of the Q Method wordmark with a thin divider, links to polia.nl; references `polia-logo.png` from `client/public/` (file needs to be dropped in before deploy)
+
+## 2026-03-20 (session 9)
+
+- **Email delivery working** — switched from SMTP (Nodemailer) to Resend HTTP API because Render's free tier blocks outbound SMTP ports (465 and 587); emails now send over regular HTTPS
+- **Dual email backend** — `email.js` now supports two modes: Resend API (set `RESEND_API_KEY`) or SMTP (set `SMTP_HOST`), with automatic fallback to console logging if neither is configured
+- **Diagnostic endpoint** — added `/api/email-test` that checks which email method is active and verifies the connection (handles Resend's send-only API keys gracefully)
+- **DNS fix** — merged two conflicting SPF records (Zoho + Resend) into a single combined record so email deliverability works correctly
+- **Wrote Milestone 6** — final touches: participant names, GitHub Sponsors, Polia branding, landing page copy updates
+
 ## 2026-03-19 (session 8)
 
 - **Reverted from PostgreSQL back to SQLite** — replaced `pg` with `better-sqlite3`; SQLite is simpler, has zero config, and avoids Render's 90-day free Postgres expiry

@@ -18,7 +18,7 @@
   font-style: italic;
 }
 
-.coffee {
+.support {
   font-size: 0.8rem;
   color: var(--color-ink-muted);
   text-decoration: none;
@@ -28,7 +28,7 @@
   transition: all 0.2s ease;
 }
 
-.coffee:hover {
+.support:hover {
   border-color: var(--color-ink-muted);
   color: var(--color-ink-light);
 }

@@ -41,11 +41,12 @@ const SCHEMA_SQL = `
   );
 
   CREATE TABLE IF NOT EXISTS responses (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    study_id     TEXT NOT NULL REFERENCES studies(id),
-    sort_result  TEXT NOT NULL,
-    explanations TEXT NOT NULL DEFAULT '{}',
-    submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    study_id         TEXT NOT NULL REFERENCES studies(id),
+    participant_name TEXT NOT NULL DEFAULT 'Anonymous',
+    sort_result      TEXT NOT NULL,
+    explanations     TEXT NOT NULL DEFAULT '{}',
+    submitted_at     TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
   CREATE INDEX IF NOT EXISTS idx_responses_study ON responses(study_id);

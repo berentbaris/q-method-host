@@ -39,7 +39,7 @@ router.post('/:code/responses', async (req, res) => {
 
   try {
     const { code } = req.params
-    const { sortResult, explanations } = req.body
+    const { sortResult, explanations, participantName } = req.body
 
     // Verify the study exists
     const study = await queryOne('SELECT * FROM studies WHERE id = ?', [code.toUpperCase()])
@@ -89,12 +89,18 @@ router.post('/:code/responses', async (req, res) => {
       }
     }
 
+    // Sanitize participant name
+    const safeName = (participantName && typeof participantName === 'string')
+      ? participantName.trim().slice(0, 200)
+      : 'Anonymous'
+
     // Insert the response
     const result = await execute(
-      `INSERT INTO responses (study_id, sort_result, explanations)
-       VALUES (?, ?, ?)`,
+      `INSERT INTO responses (study_id, participant_name, sort_result, explanations)
+       VALUES (?, ?, ?, ?)`,
       [
         code.toUpperCase(),
+        safeName,
         JSON.stringify(sortResult),
         JSON.stringify(sanitizedExplanations),
       ]
@@ -110,6 +116,7 @@ router.post('/:code/responses', async (req, res) => {
     // Send email to organizers (non-blocking — don't fail the request if email fails)
     // The email module handles both parsed objects and JSON strings via safeParse
     sendResultsEmail(study, {
+      participant_name: safeName,
       sort_result: JSON.stringify(sortResult),
       explanations: JSON.stringify(sanitizedExplanations),
       submitted_at: new Date().toISOString(),

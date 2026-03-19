@@ -113,6 +113,51 @@
   margin-bottom: var(--space-xl);
 }
 
+/* --- Name form (intro stage) --- */
+
+.nameForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  max-width: 20rem;
+  margin: 0 auto;
+}
+
+.nameLabel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  text-align: left;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  font-size: 1rem;
+  border: 2px solid var(--color-paper-dark);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  transition: border-color 0.2s ease;
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.nameInput::placeholder {
+  color: var(--color-ink-muted);
+  font-weight: 400;
+}
+
 /* --- Stage bar --- */
 
 .stageBar {

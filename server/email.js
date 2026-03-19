@@ -85,11 +85,14 @@ function getEmailMethod() {
 
 // ---- Format a single response into a readable email ----
 
+const SPONSORS_URL = process.env.SPONSORS_URL || '#github-sponsors'
+
 function formatResultsEmail(study, response) {
   const statements = safeParse(study.statements)
   const pyramidConfig = safeParse(study.pyramid_config)
   const sortResult = safeParse(response.sort_result)
   const explanations = safeParse(response.explanations)
+  const participantName = response.participant_name || 'Anonymous'
 
   // Build a lookup: statement id → text
   const stmtMap = {}
@@ -112,6 +115,7 @@ function formatResultsEmail(study, response) {
 
   // ---- Plain text version ----
   let text = `New Q-Sort Response\n`
+  text += `Participant: ${participantName}\n`
   text += `Study: ${study.title}\n`
   text += `Study code: ${study.id}\n`
   text += `Submitted: ${response.submitted_at || new Date().toISOString()}\n`
@@ -171,6 +175,7 @@ function formatResultsEmail(study, response) {
 <body>
   <h1>New Q-Sort Response</h1>
   <p class="meta">
+    Participant: <strong>${escapeHtml(participantName)}</strong> &nbsp;·&nbsp;
     Study: <strong>${escapeHtml(study.title)}</strong> &nbsp;·&nbsp;
     Code: ${escapeHtml(study.id)} &nbsp;·&nbsp;
     ${response.submitted_at || new Date().toISOString()}
@@ -212,7 +217,7 @@ function formatResultsEmail(study, response) {
   html += `
   <div class="footer">
     Sent by Q-Sort Platform &nbsp;·&nbsp;
-    <a href="#">View all responses</a>
+    <a href="${SPONSORS_URL}">Support development</a>
   </div>
 </body>
 </html>`
@@ -239,7 +244,8 @@ export async function sendResultsEmail(study, response) {
 
   const { text, html } = formatResultsEmail(study, response)
   const responseCount = arguments[2] || '?'
-  const subject = `New Q-Sort response for "${study.title}" (#${responseCount})`
+  const participantLabel = safeParse(response.participant_name) || 'Anonymous'
+  const subject = `New Q-Sort response for "${study.title}" from ${participantLabel} (#${responseCount})`
 
   const method = getEmailMethod()
 

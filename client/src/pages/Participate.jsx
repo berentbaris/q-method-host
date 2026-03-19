@@ -30,6 +30,7 @@ export default function Participate() {
   const [statements, setStatements] = useState([])
   const [pyramidConfig, setPyramidConfig] = useState([])
 
+  const [participantName, setParticipantName] = useState('')
   const [triageResult, setTriageResult] = useState(null)
   const [pyramidResult, setPyramidResult] = useState(null)
   const [explanations, setExplanations] = useState({ negative: '', positive: '' })
@@ -75,7 +76,7 @@ export default function Participate() {
     setSubmitting(true)
     setSubmitError(null)
     try {
-      await submitResponse(studyCode, { sortResult: pyramidResult, explanations })
+      await submitResponse(studyCode, { sortResult: pyramidResult, explanations, participantName: participantName.trim() || 'Anonymous' })
       setStage(5)
     } catch (err) {
       // If server is down, still show thank-you for demo
@@ -115,6 +116,8 @@ export default function Participate() {
           title={studyTitle}
           description={studyDescription}
           statementCount={statements.length}
+          participantName={participantName}
+          onNameChange={setParticipantName}
           onBegin={() => setStage(2)}
         />
       )}
@@ -207,7 +210,12 @@ function EnterCode({ code, onChange, onSubmit, error }) {
   )
 }
 
-function StudyIntro({ code, title, description, statementCount, onBegin }) {
+function StudyIntro({ code, title, description, statementCount, participantName, onNameChange, onBegin }) {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onBegin()
+  }
+
   return (
     <div className={styles.centered}>
       <p className={styles.codeBadge}>Study {code}</p>
@@ -236,9 +244,22 @@ function StudyIntro({ code, title, description, statementCount, onBegin }) {
       <p className={styles.introNote}>
         There are no right or wrong answers. Take your time.
       </p>
-      <button className={styles.btnPrimary} onClick={onBegin}>
-        Begin sorting →
-      </button>
+      <form onSubmit={handleSubmit} className={styles.nameForm}>
+        <label className={styles.nameLabel}>
+          Your name
+          <input
+            type="text"
+            className={styles.nameInput}
+            placeholder="e.g. Jane Doe"
+            value={participantName}
+            onChange={e => onNameChange(e.target.value)}
+            autoFocus
+          />
+        </label>
+        <button type="submit" className={styles.btnPrimary}>
+          Begin sorting →
+        </button>
+      </form>
     </div>
   )
 }

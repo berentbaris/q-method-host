@@ -42,14 +42,18 @@ app.get('/api/email-test', async (_req, res) => {
   }
 
   if (method === 'resend') {
-    // Test Resend API by calling their domains endpoint (lightweight check)
+    // Test by sending a no-op request to Resend's API
     try {
       const testRes = await fetch('https://api.resend.com/domains', {
         headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` },
       })
       if (!testRes.ok) {
-        const body = await testRes.text()
-        return res.json({ status: 'error', method, config, error: `Resend API returned ${testRes.status}: ${body}`, message: 'Resend API key rejected — check your key' })
+        const body = await testRes.json().catch(() => ({}))
+        // A 401 with "restricted" means the key works but is send-only — that's fine
+        if (testRes.status === 401 && body.name === 'restricted_api_key') {
+          return res.json({ status: 'ok', method, config, message: 'Resend API key is valid (send-only). Emails should work.' })
+        }
+        return res.json({ status: 'error', method, config, error: `Resend API returned ${testRes.status}: ${body.message || 'unknown error'}`, message: 'Resend API key rejected — check your key' })
       }
       const domains = await testRes.json()
       return res.json({ status: 'ok', method, config, domains: domains.data, message: 'Resend API key valid — emails should work. Make sure EMAIL_FROM matches a verified domain.' })

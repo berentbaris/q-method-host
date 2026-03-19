@@ -40,9 +40,9 @@ export function fetchStudyResults(code) {
 
 // ---- Responses ----
 
-export function submitResponse(code, { sortResult, explanations }) {
+export function submitResponse(code, { sortResult, explanations, participantName }) {
   return request(`/studies/${encodeURIComponent(code)}/responses`, {
     method: 'POST',
-    body: JSON.stringify({ sortResult, explanations }),
+    body: JSON.stringify({ sortResult, explanations, participantName }),
   })
 }

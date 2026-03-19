@@ -12,8 +12,8 @@ export default function Landing() {
         </h1>
         <p className={styles.subtitle}>
           Create a study, share a link, and collect ranked responses —
-          no accounts, no installs, no fuss. Built for researchers
-          who want to focus on the method, not the logistics.
+          no accounts, no installs, no fees. Completely free, forever.
+          Built for researchers who want to focus on the method, not the logistics.
         </p>
         <div className={styles.actions}>
           <Link to="/create" className={styles.btnPrimary}>
