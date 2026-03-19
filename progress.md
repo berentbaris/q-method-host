@@ -1,5 +1,13 @@
 # Q-Method Platform — Progress Log
 
+## 2026-03-19 (session 8)
+
+- **Reverted from PostgreSQL back to SQLite** — replaced `pg` with `better-sqlite3`; SQLite is simpler, has zero config, and avoids Render's 90-day free Postgres expiry
+- **Rewrote `server/db.js`** — synchronous SQLite via `better-sqlite3` with WAL mode, wrapped in async helpers to keep route code unchanged
+- **Updated all routes for SQLite** — `$1`-style placeholders → `?`, removed JSONB reliance (explicit `JSON.parse` on read, `JSON.stringify` on write), `lastInsertRowid` instead of `RETURNING id`
+- **Updated deployment config** — `render.yaml` now provisions a 1 GB persistent disk instead of a Postgres database; Dockerfile adds build tools for `better-sqlite3` native compilation and a data volume mount point
+- **Updated README and .env.example** — removed all PostgreSQL references, documented SQLite setup and `DB_PATH` option
+
 ## 2026-03-19 (session 7)
 
 - **Fixed statement ID display in PyramidSort** — source cards and placed cards now show short sequential labels (S1, S2, S3…) instead of full UUIDs, making them readable and compact

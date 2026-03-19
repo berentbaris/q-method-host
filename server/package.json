@@ -12,6 +12,6 @@
     "express": "^4.21.0",
     "dotenv": "^16.4.0",
     "nodemailer": "^7.0.11",
-    "pg": "^8.13.0"
+    "better-sqlite3": "^11.7.0"
   }
 }

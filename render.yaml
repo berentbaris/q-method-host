@@ -1,12 +1,6 @@
 # Render Blueprint — deploy Q-Method Platform in one click
 # https://render.com/docs/blueprint-spec
 
-databases:
-  - name: q-method-db
-    plan: free
-    databaseName: qmethod
-    user: qmethod
-
 services:
   - type: web
     name: q-method-platform
@@ -14,13 +8,13 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: NODE_ENV=production npm start
+    disk:
+      name: qmethod-data
+      mountPath: /opt/render/project/src/server/data
+      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: q-method-db
-          property: connectionString
       # Optional: add SMTP vars to enable email delivery
       # - key: SMTP_HOST
       #   value: smtp.resend.com

@@ -14,7 +14,7 @@ A web app where researchers create Q-method studies and participants complete Q-
 ## Tech stack
 
 - **Frontend**: React 18 + Vite + React Router, CSS modules
-- **Backend**: Express (Node.js), PostgreSQL via `pg`
+- **Backend**: Express (Node.js), SQLite via `better-sqlite3`
 - **Email**: Nodemailer (configurable SMTP, or console fallback)
 
 ## Quick start (local development)
@@ -29,18 +29,12 @@ cd client && npm install
 cd ../server && npm install
 cd ..
 
-# 3. Set up PostgreSQL
-# Option A: Install Postgres locally and create a database:
-#   createdb qmethod
-# Option B: Use a free hosted instance (Render, Supabase, Neon, etc.)
-
-# 4. Configure environment — copy and edit the env file
+# 3. Configure environment (optional — the app runs without any config)
 cp .env.example server/.env
-# Set DATABASE_URL to your PostgreSQL connection string.
 # Optionally fill in SMTP credentials to enable email delivery.
 # Without SMTP config, emails are printed to the console.
 
-# 5. Start both dev servers
+# 4. Start both dev servers
 # Terminal 1 — backend (port 4000):
 cd server && npm run dev
 
@@ -48,25 +42,24 @@ cd server && npm run dev
 cd client && npm run dev
 ```
 
-Open http://localhost:3000 and you're set. The database tables are created automatically on first server start.
+Open http://localhost:3000 and you're set. The SQLite database is created automatically on first server start at `server/data/qmethod.db`.
 
 ## Deploy to Render (recommended)
 
-The included `render.yaml` Blueprint provisions both the web service and a PostgreSQL database:
+The included `render.yaml` Blueprint provisions the web service with a 1 GB persistent disk for the SQLite database:
 
 1. Push this repo to GitHub
 2. Go to [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**
 3. Connect your repo and select it
-4. Render reads `render.yaml` and provisions the web service + a free PostgreSQL database
-5. The `DATABASE_URL` is automatically wired from the database to the web service
-6. (Optional) Add SMTP environment variables in the Render dashboard to enable email delivery
+4. Render reads `render.yaml` and provisions the web service with a persistent disk
+5. (Optional) Add SMTP environment variables in the Render dashboard to enable email delivery
 
 That's it — the build command installs deps and builds the React client, and the start command runs the Express server in production mode, serving the client build.
 
 ### Free tier notes
 
 - Render's free web services spin down after 15 minutes of inactivity. First request after idle takes ~30 seconds.
-- Render's free PostgreSQL databases expire after 90 days. Upgrade to a paid plan for permanent storage.
+- The persistent disk keeps your SQLite data safe across deploys and restarts — no expiry.
 
 ## Deploy with Docker
 
@@ -75,17 +68,17 @@ For Railway, Fly.io, or self-hosting:
 ```bash
 docker build -t q-method .
 docker run -p 4000:4000 \
-  -e DATABASE_URL=postgres://user:pass@host:5432/qmethod \
+  -v qmethod-data:/app/server/data \
   q-method
 ```
 
-No volume mount needed — data lives in PostgreSQL.
+Mount a volume at `/app/server/data` to persist the SQLite database across container restarts.
 
 ## Environment variables
 
 | Variable | Required | Description |
 |---|---|---|
-| `DATABASE_URL` | **Yes** | PostgreSQL connection string |
+| `DB_PATH` | No | SQLite file path (default: `server/data/qmethod.db`) |
 | `PORT` | No | Server port (default: 4000) |
 | `NODE_ENV` | No | Set to `production` for production mode |
 | `SMTP_HOST` | No | SMTP server hostname |
@@ -136,10 +129,10 @@ q-method-platform/
 │   ├── routes/
 │   │   ├── studies.js    Study CRUD endpoints
 │   │   └── responses.js  Response submission + rate limiting
-│   ├── db.js             PostgreSQL connection pool + schema init
+│   ├── db.js             SQLite database + schema init
 │   ├── email.js          Nodemailer email service
 │   └── index.js          Express app + static file serving
-├── render.yaml           Render Blueprint (web service + Postgres database)
+├── render.yaml           Render Blueprint (web service + persistent disk)
 ├── Dockerfile            Container build for Railway / Fly.io / self-hosting
 ├── .env.example          Environment variable template
 └── README.md

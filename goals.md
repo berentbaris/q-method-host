@@ -27,7 +27,7 @@ A web app where researchers can organize Q-method studies and participants can c
 ## Tech Stack Preferences
 - **Frontend**: React (single-page app, no page reloads between steps)
 - **Backend**: Node.js + Express (or equivalent lightweight server)
-- **Database**: SQLite for simplicity (or a hosted option like Supabase/PlanetScale if persistence across deploys matters)
+- **Database**: SQLite via `better-sqlite3` (persistent disk on Render)
 - **Email**: Nodemailer or Resend API for sending results to organizers
 - **Styling**: CSS with a distinctive, editorial aesthetic — avoid generic AI-slop design
 - **Hosting target**: Vercel, Netlify, or similar
@@ -86,7 +86,7 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Smoke-test deployed app with a real study
 
 ### Milestone 5 — Post-launch updates
-- [x] Switch from SQLite to PostgreSQL (persistent data across deploys)
+- [x] ~~Switch from SQLite to PostgreSQL~~ → Reverted back to SQLite with persistent disk (simpler, no 90-day expiry)
 - [x] Give users more freedom when defining pyramid configuration during study creation
 - [x] Fix email service for PostgreSQL JSONB compatibility (removed re-stringify workaround, added safeParse helper)
 - [x] Fix pyramid sort page (Step 2: Rank) issues:
@@ -99,9 +99,9 @@ A web app where researchers can organize Q-method studies and participants can c
 
 **Last updated**: 2026-03-19
 **Active milestone**: Milestone 5
-**Last completed**: Fixed pyramid sort UI issues (short statement labels, tooltip instead of inline detail panel) and made email service PostgreSQL-compatible
+**Last completed**: Reverted from PostgreSQL back to SQLite — simpler, no 90-day database expiry, persistent disk keeps data across deploys
 **Next task**: Implement the emailing feature (configure SMTP env vars on Render — the code is ready, just needs SMTP_HOST/PORT/USER/PASS set in Render dashboard)
-**Blockers / decisions needed**: To enable email delivery, the organizer needs to choose an SMTP provider (e.g. Resend, Gmail SMTP, or Mailgun) and add the credentials as environment variables on Render. The code handles everything else automatically.
+**Blockers / decisions needed**: After pushing the SQLite revert, re-deploy on Render via Blueprint so it provisions the persistent disk. Delete the old Postgres database from Render if it still exists. Any existing study data from Postgres won't carry over — fresh start.
 
 ## Conventions & Preferences
 - Use functional React components with hooks

@@ -42,7 +42,7 @@ router.post('/:code/responses', async (req, res) => {
     const { sortResult, explanations } = req.body
 
     // Verify the study exists
-    const study = await queryOne('SELECT * FROM studies WHERE id = $1', [code.toUpperCase()])
+    const study = await queryOne('SELECT * FROM studies WHERE id = ?', [code.toUpperCase()])
     if (!study) {
       return res.status(404).json({ error: 'Study not found' })
     }
@@ -52,9 +52,9 @@ router.post('/:code/responses', async (req, res) => {
       return res.status(400).json({ error: 'sortResult is required and must be an object' })
     }
 
-    // With JSONB, pg returns parsed objects already
-    const statements = study.statements
-    const pyramidConfig = study.pyramid_config
+    // SQLite stores JSON as TEXT — parse on read
+    const statements = JSON.parse(study.statements)
+    const pyramidConfig = JSON.parse(study.pyramid_config)
 
     // Check that every statement has been placed
     const placedIds = Object.keys(sortResult)
@@ -89,11 +89,10 @@ router.post('/:code/responses', async (req, res) => {
       }
     }
 
-    // Insert and get the new row's ID
-    const { rows: insertedRows } = await execute(
+    // Insert the response
+    const result = await execute(
       `INSERT INTO responses (study_id, sort_result, explanations)
-       VALUES ($1, $2, $3)
-       RETURNING id`,
+       VALUES (?, ?, ?)`,
       [
         code.toUpperCase(),
         JSON.stringify(sortResult),
@@ -103,23 +102,23 @@ router.post('/:code/responses', async (req, res) => {
 
     // Count how many responses this study now has (for the email subject)
     const countRow = await queryOne(
-      'SELECT COUNT(*) as count FROM responses WHERE study_id = $1',
+      'SELECT COUNT(*) as count FROM responses WHERE study_id = ?',
       [code.toUpperCase()]
     )
     const responseCount = countRow ? parseInt(countRow.count, 10) : '?'
 
     // Send email to organizers (non-blocking — don't fail the request if email fails)
-    // The email module now handles both parsed objects and JSON strings (JSONB-safe)
+    // The email module handles both parsed objects and JSON strings via safeParse
     sendResultsEmail(study, {
-      sort_result: sortResult,
-      explanations: sanitizedExplanations,
+      sort_result: JSON.stringify(sortResult),
+      explanations: JSON.stringify(sanitizedExplanations),
       submitted_at: new Date().toISOString(),
     }, responseCount).catch(err => {
       console.error('[email] Error sending results email:', err.message)
     })
 
     res.status(201).json({
-      id: insertedRows[0].id,
+      id: result.lastInsertRowid,
       message: 'Response recorded successfully. Thank you!',
     })
   } catch (err) {

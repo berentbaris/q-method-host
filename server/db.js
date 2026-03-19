@@ -1,33 +1,31 @@
 /*
   Database module for Q-Method platform.
 
-  Uses PostgreSQL via the `pg` library with connection pooling.
-  Configure via environment variable:
-    DATABASE_URL — full connection string, e.g.
-      postgres://user:pass@host:5432/dbname
-
-  The pool is configured for modest concurrency (suitable for free-tier
-  hosted Postgres like Render, Supabase, or Neon).
+  Uses SQLite via `better-sqlite3` — a single file stored at ./data/qmethod.db.
+  The data directory is created automatically on startup.
+  On Render, mount a persistent disk at /opt/render/project/src/server/data
+  so the database survives deploys.
 */
 
-import pg from 'pg'
-const { Pool } = pg
+import Database from 'better-sqlite3'
+import { mkdirSync } from 'fs'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  // Render's free Postgres requires SSL in production
-  ssl: process.env.NODE_ENV === 'production'
-    ? { rejectUnauthorized: false }
-    : false,
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-})
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const DATA_DIR = process.env.DB_PATH
+  ? dirname(process.env.DB_PATH)
+  : join(__dirname, 'data')
+const DB_FILE = process.env.DB_PATH || join(DATA_DIR, 'qmethod.db')
 
-// Log connection errors (but don't crash — queries will fail individually)
-pool.on('error', (err) => {
-  console.error('[db] Unexpected pool error:', err.message)
-})
+// Ensure data directory exists
+mkdirSync(DATA_DIR, { recursive: true })
+
+const db = new Database(DB_FILE)
+
+// Performance tuning
+db.pragma('journal_mode = WAL')
+db.pragma('foreign_keys = ON')
 
 // ---- Schema initialisation ----
 
@@ -36,28 +34,29 @@ const SCHEMA_SQL = `
     id               TEXT PRIMARY KEY,
     title            TEXT NOT NULL,
     description      TEXT NOT NULL DEFAULT '',
-    statements       JSONB NOT NULL,
-    pyramid_config   JSONB NOT NULL,
-    organizer_emails JSONB NOT NULL,
-    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    statements       TEXT NOT NULL,
+    pyramid_config   TEXT NOT NULL,
+    organizer_emails TEXT NOT NULL,
+    created_at       TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
   CREATE TABLE IF NOT EXISTS responses (
-    id           SERIAL PRIMARY KEY,
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
     study_id     TEXT NOT NULL REFERENCES studies(id),
-    sort_result  JSONB NOT NULL,
-    explanations JSONB NOT NULL DEFAULT '{}'::jsonb,
-    submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    sort_result  TEXT NOT NULL,
+    explanations TEXT NOT NULL DEFAULT '{}',
+    submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
   CREATE INDEX IF NOT EXISTS idx_responses_study ON responses(study_id);
 `
 
 // Run schema migration on startup — called from index.js before listening
-export async function initDatabase() {
+export function initDatabase() {
   try {
-    await pool.query(SCHEMA_SQL)
-    console.log('[db] Schema initialised')
+    db.exec(SCHEMA_SQL)
+    console.log('[db] Schema initialised (SQLite)')
+    console.log(`[db] Database file: ${DB_FILE}`)
   } catch (err) {
     console.error('[db] Schema initialisation failed:', err.message)
     throw err
@@ -65,28 +64,32 @@ export async function initDatabase() {
 }
 
 // ---- Query helpers ----
+// These mimic the async interface from the pg version so routes need minimal changes.
 
-// Run a parameterised query, return all rows
-export async function query(text, params) {
-  const result = await pool.query(text, params)
-  return result.rows
+// Run a query, return all rows
+export async function query(sql, params = []) {
+  return db.prepare(sql).all(...params)
 }
 
-// Run a parameterised query, return first row or null
-export async function queryOne(text, params) {
-  const result = await pool.query(text, params)
-  return result.rows[0] || null
+// Run a query, return first row or null
+export async function queryOne(sql, params = []) {
+  return db.prepare(sql).get(...params) || null
 }
 
-// Run an INSERT / UPDATE / DELETE and return rows (use with RETURNING)
-export async function execute(text, params) {
-  const result = await pool.query(text, params)
-  return { rows: result.rows, rowCount: result.rowCount }
+// Run an INSERT / UPDATE / DELETE — returns { rows, rowCount, lastInsertRowid }
+export async function execute(sql, params = []) {
+  const stmt = db.prepare(sql)
+  const info = stmt.run(...params)
+  return {
+    rows: [{ id: info.lastInsertRowid }],
+    rowCount: info.changes,
+    lastInsertRowid: info.lastInsertRowid,
+  }
 }
 
 // Graceful shutdown helper
 export async function closePool() {
-  await pool.end()
+  db.close()
 }
 
 export default { initDatabase, query, queryOne, execute, closePool }

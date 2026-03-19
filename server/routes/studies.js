@@ -26,7 +26,7 @@ async function uniqueCode() {
     code = generateCode()
     attempts++
     if (attempts > 100) throw new Error('Failed to generate unique study code')
-    const existing = await queryOne('SELECT 1 FROM studies WHERE id = $1', [code])
+    const existing = await queryOne('SELECT 1 FROM studies WHERE id = ?', [code])
     if (!existing) return code
   } while (true)
 }
@@ -72,7 +72,7 @@ router.post('/', async (req, res) => {
 
     await execute(
       `INSERT INTO studies (id, title, description, statements, pyramid_config, organizer_emails)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [
         code,
         title.trim(),
@@ -100,20 +100,19 @@ router.get('/:code', async (req, res) => {
   try {
     const { code } = req.params
 
-    const row = await queryOne('SELECT * FROM studies WHERE id = $1', [code.toUpperCase()])
+    const row = await queryOne('SELECT * FROM studies WHERE id = ?', [code.toUpperCase()])
 
     if (!row) {
       return res.status(404).json({ error: 'Study not found. Please check the code and try again.' })
     }
 
-    // Return participant-safe data (no organizer emails)
-    // With JSONB columns, pg returns parsed objects already
+    // SQLite stores JSON as TEXT — parse on read
     res.json({
       code: row.id,
       title: row.title,
       description: row.description,
-      statements: row.statements,
-      pyramidConfig: row.pyramid_config,
+      statements: JSON.parse(row.statements),
+      pyramidConfig: JSON.parse(row.pyramid_config),
       createdAt: row.created_at,
     })
   } catch (err) {
@@ -128,13 +127,13 @@ router.get('/:code/results', async (req, res) => {
   try {
     const { code } = req.params
 
-    const study = await queryOne('SELECT * FROM studies WHERE id = $1', [code.toUpperCase()])
+    const study = await queryOne('SELECT * FROM studies WHERE id = ?', [code.toUpperCase()])
     if (!study) {
       return res.status(404).json({ error: 'Study not found' })
     }
 
     const responses = await query(
-      'SELECT * FROM responses WHERE study_id = $1 ORDER BY submitted_at ASC',
+      'SELECT * FROM responses WHERE study_id = ? ORDER BY submitted_at ASC',
       [code.toUpperCase()]
     )
 
@@ -143,13 +142,13 @@ router.get('/:code/results', async (req, res) => {
         code: study.id,
         title: study.title,
         description: study.description,
-        statements: study.statements,
-        pyramidConfig: study.pyramid_config,
+        statements: JSON.parse(study.statements),
+        pyramidConfig: JSON.parse(study.pyramid_config),
       },
       responses: responses.map(r => ({
         id: r.id,
-        sortResult: r.sort_result,
-        explanations: r.explanations,
+        sortResult: JSON.parse(r.sort_result),
+        explanations: JSON.parse(r.explanations),
         submittedAt: r.submitted_at,
       })),
       totalResponses: responses.length,
