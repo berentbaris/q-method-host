@@ -25,7 +25,7 @@
 }
 
 .poliaLogo {
-  height: 28px;
+  height: 36px;
   width: auto;
   opacity: 0.85;
   transition: opacity 0.2s ease;
@@ -40,7 +40,7 @@
   content: '';
   display: block;
   width: 1px;
-  height: 22px;
+  height: 26px;
   background: var(--color-paper-dark);
   margin-left: 0.75rem;
 }
@@ -86,10 +86,10 @@
 /* On small screens, hide the Polia logo to save space */
 @media (max-width: 520px) {
   .poliaLogo {
-    height: 22px;
+    height: 28px;
   }
 
   .poliaLink::after {
-    height: 18px;
+    height: 20px;
   }
 }
