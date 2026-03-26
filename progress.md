@@ -1,5 +1,13 @@
 # Q-Method Platform — Progress Log
 
+## 2026-03-26 (session 11)
+
+- **Investigated GitHub Pages** — concluded it's not feasible: the app requires Express + SQLite for the API and database, which GitHub Pages (static-only) can't support. Documented the finding in goals.md.
+- **Added comprehensive SEO meta tags** — added `<meta>` description, keywords, author, robots, canonical URL, Open Graph tags (og:title, og:description, og:type, og:url), and Twitter Card tags to `index.html`
+- **Added JSON-LD structured data** — two blocks: a `WebApplication` schema with features list and pricing (free), and a `FAQPage` schema with 6 Q&A entries for rich search results
+- **Built interactive FAQ section** — 8 accordion-style Q&A items on the landing page covering free pricing, no accounts needed, completion time, pyramid customization, results delivery, mobile support, forced distributions, and data handling; styled to match the editorial design system with +/− toggle buttons
+- **Expanded Q-methodology explainer** — added a second paragraph to the "What is Q-methodology?" aside covering history (William Stephenson, 1930s), cross-disciplinary usage, and how Q-sorts differ from surveys
+
 ## 2026-03-20 (session 10)
 
 - **Added participant name field** — name input appears on the study intro page before "Begin sorting"; name is stored in the `responses` table (`participant_name` column), included in email subject line and email body (both HTML and plain text)

@@ -1,5 +1,60 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Landing.module.css'
+
+const FAQ_ITEMS = [
+  {
+    q: 'Is this Q-sort tool really free?',
+    a: 'Yes, completely free with no usage limits. No account required, no trial period, no hidden fees. Create as many studies as you want and collect as many responses as you need.',
+  },
+  {
+    q: 'Do participants need to create an account or install anything?',
+    a: 'No. Participants access the study through a unique link or study code you share with them. They just open it in their browser and start sorting — no accounts, no downloads.',
+  },
+  {
+    q: 'How long does it take a participant to complete a Q-sort?',
+    a: 'Most participants finish in 10–20 minutes, depending on the number of statements. The three-stage process (triage, rank, explain) keeps things focused so nobody gets stuck staring at a big empty grid.',
+  },
+  {
+    q: 'Can I customize the sorting pyramid?',
+    a: 'Yes. You choose the score range (e.g. −3 to +3 or −5 to +5), pick a distribution shape (Standard, Flat, or Steep), and fine-tune the number of slots per column. The tool checks that your total slots match your number of statements.',
+  },
+  {
+    q: 'How do I get the results?',
+    a: 'Each time a participant submits, their full ranked sort and written explanations are emailed to the organizer addresses you provided when creating the study. You get one email per response, so you can track submissions as they come in.',
+  },
+  {
+    q: 'Can participants do this on their phone?',
+    a: 'Yes. The sorting interface is designed to work on mobile browsers with touch-based drag-and-drop. The organizer setup flow is optimized for desktop but works on mobile too.',
+  },
+  {
+    q: 'What is a forced distribution?',
+    a: 'A forced distribution (or "Q-sort grid") is a pyramid-shaped arrangement where each column has a fixed number of slots. Participants must place exactly one statement per slot, which forces them to make comparative judgments rather than rating everything the same.',
+  },
+  {
+    q: 'What happens to my data?',
+    a: 'Study data and responses are stored on our server so participants can access your study via its code. Results are emailed to you as they come in. We don\'t share or sell data, and there are no analytics trackers on this site.',
+  },
+]
+
+function FaqItem({ question, answer }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className={styles.faqItem}>
+      <button
+        className={`${styles.faqQuestion} ${open ? styles.faqOpen : ''}`}
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+      >
+        <span>{question}</span>
+        <span className={styles.faqToggle} aria-hidden="true">
+          {open ? '−' : '+'}
+        </span>
+      </button>
+      {open && <p className={styles.faqAnswer}>{answer}</p>}
+    </div>
+  )
+}
 
 export default function Landing() {
   return (
@@ -71,6 +126,25 @@ export default function Landing() {
             of shared perspective that can be analyzed with factor analysis.
             It bridges qualitative richness with quantitative rigor.
           </p>
+          <p className={styles.asideText}>
+            Developed by physicist-psychologist William Stephenson in the 1930s,
+            Q-method is used across fields including political science, health
+            research, environmental studies, education, and UX research.
+            Unlike surveys that measure how many people agree with a statement,
+            Q-sorts reveal <em>how</em> people structure their viewpoints relative
+            to one another — making it especially useful for exploring complex or
+            contested topics where you want to understand the landscape of opinion.
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className={styles.faq}>
+        <h2 className={styles.sectionTitle}>Frequently asked questions</h2>
+        <div className={styles.faqList}>
+          {FAQ_ITEMS.map((item, i) => (
+            <FaqItem key={i} question={item.q} answer={item.a} />
+          ))}
         </div>
       </section>
     </div>

@@ -102,14 +102,19 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Edit landing page text to subtly emphasize that the tool is free (other Q-sort tools are paid)
 - [x] Add Polia company logo next to the "Q Method" text in the header (top-left, on every page); logo links to polia.nl
 
+### Milestone 7 - Ongoing updates
+- [x] Investigate whether its possible/easy to switch to Github Pages instead of using Render
+  - **Finding**: Not feasible. The app requires a Node.js/Express backend with SQLite for study storage, response submission, and email delivery. GitHub Pages only serves static files — there's no way to run the API or database. Sticking with Render is the right call. (If a static-only version is ever needed, the backend would need to move to a separate service or be replaced with a third-party BaaS.)
+- [x] Come up with SEO improvements + add FAQ to have more related text
+
 ## Current Status
 > Update this section each session so Claude knows where to pick up.
 
-**Last updated**: 2026-03-20
-**Active milestone**: Milestone 6 — complete
-**Last completed**: All Milestone 6 tasks — participant names, GitHub Sponsors, Polia branding, landing page copy
-**Next task**: None — all milestones complete. Ship it!
-**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Replace `#github-sponsors` placeholder with real URL once company registration is done (search codebase for `#github-sponsors`).
+**Last updated**: 2026-03-26
+**Active milestone**: Milestone 7 — complete
+**Last completed**: All Milestone 7 tasks — GitHub Pages investigation (not feasible), SEO meta tags, FAQ section, structured data (JSON-LD)
+**Next task**: None planned — project is feature-complete. Consider adding new milestones if further work is needed.
+**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Replace `#github-sponsors` placeholder with real URL once company registration is done (search codebase for `#github-sponsors`). (3) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`.
 
 ## Conventions & Preferences
 - Use functional React components with hooks
