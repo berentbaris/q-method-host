@@ -1,5 +1,11 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-03 (session 12)
+
+- **Replaced all `#github-sponsors` placeholder URLs** with `https://buymeacoffee.com/polia` in three locations: `CoffeeButton.jsx`, `Footer.jsx`, and `server/email.js`
+- **Updated button title** — removed "on GitHub" from the CoffeeButton tooltip; visible label text stays as "Support development" (no branding)
+- **Cleared blocker (2)** from goals.md — the placeholder URL issue is now resolved
+
 ## 2026-03-26 (session 11)
 
 - **Investigated GitHub Pages** — concluded it's not feasible: the app requires Express + SQLite for the API and database, which GitHub Pages (static-only) can't support. Documented the finding in goals.md.

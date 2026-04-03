@@ -8,7 +8,7 @@ export default function Footer() {
           A free, open tool for Q-methodology research.
         </p>
         <a
-          href="#github-sponsors"
+          href="https://buymeacoffee.com/polia"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.support}

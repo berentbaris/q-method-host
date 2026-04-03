@@ -85,7 +85,7 @@ function getEmailMethod() {
 
 // ---- Format a single response into a readable email ----
 
-const SPONSORS_URL = process.env.SPONSORS_URL || '#github-sponsors'
+const SPONSORS_URL = process.env.SPONSORS_URL || 'https://buymeacoffee.com/polia'
 
 function formatResultsEmail(study, response) {
   const statements = safeParse(study.statements)

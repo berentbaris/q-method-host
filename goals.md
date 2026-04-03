@@ -108,13 +108,13 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Come up with SEO improvements + add FAQ to have more related text
 
 ## Current Status
-> Update this section each session so Claude knows where to pick up.
+All "Support development" links now point to buymeacoffee.com/polia.
 
-**Last updated**: 2026-03-26
+**Last updated**: 2026-04-03
 **Active milestone**: Milestone 7 — complete
-**Last completed**: All Milestone 7 tasks — GitHub Pages investigation (not feasible), SEO meta tags, FAQ section, structured data (JSON-LD)
+**Last completed**: Replaced `#github-sponsors` placeholder URLs with `https://buymeacoffee.com/polia` in CoffeeButton, Footer, and email template
 **Next task**: None planned — project is feature-complete. Consider adding new milestones if further work is needed.
-**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Replace `#github-sponsors` placeholder with real URL once company registration is done (search codebase for `#github-sponsors`). (3) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`.
+**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`.
 
 ## Conventions & Preferences
 - Use functional React components with hooks
