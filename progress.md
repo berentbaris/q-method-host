@@ -1,5 +1,12 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-03 (session 13)
+
+- **Created Polia P favicon** — processed `polia-p-logo_focused.png` into a full favicon set: cropped to content, removed background, made square with transparent padding
+- **Generated multiple favicon sizes** — `favicon.ico` (16/32/48px multi-size), `favicon-32x32.png`, `favicon-16x16.png`, `apple-touch-icon.png` (180px, white background), `android-chrome-192x192.png`, `android-chrome-512x512.png`
+- **Created web manifest** — `site.webmanifest` with app name, icons, theme color (#3a7c7e), and background color matching the site palette
+- **Updated `index.html`** — added `<link>` tags for favicon.ico, PNG favicons, apple-touch-icon, web manifest, and theme-color meta tag
+
 ## 2026-04-03 (session 12)
 
 - **Replaced all `#github-sponsors` placeholder URLs** with `https://buymeacoffee.com/polia` in three locations: `CoffeeButton.jsx`, `Footer.jsx`, and `server/email.js`

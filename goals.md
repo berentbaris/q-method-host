@@ -106,13 +106,13 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Investigate whether its possible/easy to switch to Github Pages instead of using Render
   - **Finding**: Not feasible. The app requires a Node.js/Express backend with SQLite for study storage, response submission, and email delivery. GitHub Pages only serves static files — there's no way to run the API or database. Sticking with Render is the right call. (If a static-only version is ever needed, the backend would need to move to a separate service or be replaced with a third-party BaaS.)
 - [x] Come up with SEO improvements + add FAQ to have more related text
+- [x] Create Polia P favicon from `polia-p-logo_focused.png` — generated favicon.ico (multi-size), PNG favicons (16/32px), apple-touch-icon (180px), Android Chrome icons (192/512px), and web manifest
 
 ## Current Status
-All "Support development" links now point to buymeacoffee.com/polia.
 
 **Last updated**: 2026-04-03
 **Active milestone**: Milestone 7 — complete
-**Last completed**: Replaced `#github-sponsors` placeholder URLs with `https://buymeacoffee.com/polia` in CoffeeButton, Footer, and email template
+**Last completed**: Created Polia P favicon set from `polia-p-logo_focused.png` — favicon.ico, PNG favicons, apple-touch-icon, Android Chrome icons, and web manifest; updated index.html with all favicon references
 **Next task**: None planned — project is feature-complete. Consider adding new milestones if further work is needed.
 **Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`.
 
@@ -122,4 +122,4 @@ All "Support development" links now point to buymeacoffee.com/polia.
 - CSS modules or plain CSS — no Tailwind (to keep aesthetic control)
 - Commit-friendly file structure: `/client` for frontend, `/server` for backend
 - Prefer readable code over clever one-liners
-- Add a short comment above any non-obvious logic
+- Add a short comment above any non-ob
