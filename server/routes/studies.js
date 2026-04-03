@@ -147,6 +147,7 @@ router.get('/:code/results', async (req, res) => {
       },
       responses: responses.map(r => ({
         id: r.id,
+        participantName: r.participant_name || 'Anonymous',
         sortResult: JSON.parse(r.sort_result),
         explanations: JSON.parse(r.explanations),
         submittedAt: r.submitted_at,

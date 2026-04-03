@@ -1,5 +1,13 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-03 (session 14)
+
+- **Fixed broken favicon set** — previous session's favicons were malformed (ICO was actually a JPEG, PNGs were 13×13 instead of 16×16, etc.); rebuilt all from `polia-p-logo_focused.png` using Pillow: proper content crop, background removal via saturation heuristic, correct sizes (16/32/48 in ICO, 16/32 PNGs, 180px apple-touch-icon with white bg, 192/512px Android Chrome with brand teal bg)
+- **Added Results Viewer page** — new `/results` and `/results/:code` routes; organizers can enter a study code to see all responses; features two views: Aggregate (all statements sorted by average score with proportional bar), Individual (expandable cards per participant with full score breakdown and explanations)
+- **Fixed server results endpoint** — `GET /api/studies/:code/results` now includes `participant_name` in each response object
+- **Updated header nav** — added "View Results" link to the top navigation bar
+- **Updated CreateStudy success screen** — now shows both the participant link and a separate "Results link (keep this for yourself)" with a copy button; organizers get the results URL immediately after creating a study
+
 ## 2026-04-03 (session 13)
 
 - **Created Polia P favicon** — processed `polia-p-logo_focused.png` into a full favicon set: cropped to content, removed background, made square with transparent padding

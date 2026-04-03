@@ -70,6 +70,7 @@ export default function CreateStudy() {
   // Success screen — shown after study is created
   if (createdCode) {
     const shareUrl = `${window.location.origin}/study/${createdCode}`
+    const resultsUrl = `${window.location.origin}/results/${createdCode}`
     return (
       <div className={styles.page}>
         <div className={styles.stepBlock}>
@@ -90,7 +91,7 @@ export default function CreateStudy() {
           </div>
 
           <div className={styles.shareLink}>
-            <span className={styles.shareLinkLabel}>Or share this direct link:</span>
+            <span className={styles.shareLinkLabel}>Participant link (share this):</span>
             <input
               type="text"
               className={styles.input}
@@ -101,6 +102,23 @@ export default function CreateStudy() {
             <button
               className={styles.btnCopy}
               onClick={() => navigator.clipboard.writeText(shareUrl)}
+            >
+              Copy link
+            </button>
+          </div>
+
+          <div className={styles.shareLink}>
+            <span className={styles.shareLinkLabel}>Results link (keep this for yourself):</span>
+            <input
+              type="text"
+              className={styles.input}
+              readOnly
+              value={resultsUrl}
+              onFocus={e => e.target.select()}
+            />
+            <button
+              className={styles.btnCopy}
+              onClick={() => navigator.clipboard.writeText(resultsUrl)}
             >
               Copy link
             </button>
