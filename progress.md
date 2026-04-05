@@ -1,5 +1,11 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-05 (session 15)
+
+- **Added results page link to emails** — results emails now include a "View all responses for this study →" link (HTML) and a plain-text URL pointing to `{BASE_URL}/results/{study.id}`; `BASE_URL` defaults to `https://q-method.onrender.com` and can be overridden via env var
+- **Switched color palette to Polia teal brand** — replaced warm orange accent (#b44d2d) with brand teal (#3a7c7e); updated all CSS variable tokens (`--color-paper*`, `--color-ink*`, `--color-accent*`) to cool teal-tinted neutrals; also updated hardcoded `rgba(180,77,45,…)` values in PyramidSort, Results, and CoffeeButton modules to teal equivalents
+- **Switched body font from DM Sans to Space Grotesk** — updated Google Fonts import in `index.html`, CSS variable in `global.css`, and two remaining hardcoded `'DM Sans'` references in `ErrorBoundary.jsx` and `CoffeeButton.module.css`
+
 ## 2026-04-03 (session 14)
 
 - **Fixed broken favicon set** — previous session's favicons were malformed (ICO was actually a JPEG, PNGs were 13×13 instead of 16×16, etc.); rebuilt all from `polia-p-logo_focused.png` using Pillow: proper content crop, background removal via saturation heuristic, correct sizes (16/32/48 in ICO, 16/32 PNGs, 180px apple-touch-icon with white bg, 192/512px Android Chrome with brand teal bg)

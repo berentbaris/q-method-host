@@ -1,26 +1,26 @@
 /* ===================================================
    Q-Method Platform — Global Styles
-   Typefaces: Instrument Serif (display), DM Sans (body)
-   Color palette: warm neutrals with an accent
+   Typefaces: Instrument Serif (display), Space Grotesk (body)
+   Color palette: teal/blue-green — matches Polia brand
    =================================================== */
 
 :root {
-  /* Warm neutral palette */
-  --color-ink: #1a1613;
-  --color-ink-light: #5c544b;
-  --color-ink-muted: #8a8078;
-  --color-paper: #faf8f5;
-  --color-paper-warm: #f3efe9;
-  --color-paper-dark: #e8e2d9;
-  --color-accent: #b44d2d;
-  --color-accent-hover: #963e22;
-  --color-accent-light: #f0ddd5;
-  --color-success: #3d7a4a;
+  /* Teal-tinted neutral palette (Polia brand: #3a7c7e) */
+  --color-ink: #1a2224;
+  --color-ink-light: #4a5e60;
+  --color-ink-muted: #7a9194;
+  --color-paper: #f7fbfb;
+  --color-paper-warm: #ecf5f4;
+  --color-paper-dark: #cddede;
+  --color-accent: #3a7c7e;
+  --color-accent-hover: #2d6365;
+  --color-accent-light: #d2eaea;
+  --color-success: #2d7a5a;
   --color-error: #c0392b;
 
   /* Typography */
   --font-display: 'Instrument Serif', 'Georgia', serif;
-  --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-body: 'Space Grotesk', 'Helvetica Neue', sans-serif;
 
   /* Spacing scale */
   --space-xs: 0.25rem;

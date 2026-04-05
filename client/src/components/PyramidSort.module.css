@@ -139,7 +139,7 @@
 .sourceCardSelected {
   border-color: var(--color-accent) !important;
   background: var(--color-accent-light) !important;
-  box-shadow: 0 0 0 2px rgba(180, 77, 45, 0.15);
+  box-shadow: 0 0 0 2px rgba(58, 124, 126, 0.15);
 }
 
 .sourceCard_disagree { border-left: 3px solid #daa08a; }
@@ -244,11 +244,11 @@
 }
 
 .columnClickable:hover {
-  background: rgba(180, 77, 45, 0.04);
+  background: rgba(58, 124, 126, 0.04);
 }
 
 .columnHovered {
-  background: rgba(180, 77, 45, 0.08);
+  background: rgba(58, 124, 126, 0.08);
   transform: scale(1.02);
 }
 
@@ -309,7 +309,7 @@
 }
 
 .placedCard:hover {
-  background: #fdf5f2;
+  background: var(--color-paper-warm);
   box-shadow: 0 0 0 2px var(--color-accent-light);
 }
 

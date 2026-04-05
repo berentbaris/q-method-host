@@ -27,7 +27,7 @@ export default class ErrorBoundary extends Component {
           margin: '4rem auto',
           padding: '2rem',
           textAlign: 'center',
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "'Space Grotesk', 'Helvetica Neue', sans-serif",
         }}>
           <h1 style={{
             fontFamily: "'Instrument Serif', serif",
@@ -65,7 +65,7 @@ export default class ErrorBoundary extends Component {
             onClick={() => window.location.reload()}
             style={{
               padding: '0.7rem 1.4rem',
-              background: '#6b5c4a',
+              background: '#3a7c7e',
               color: '#fff',
               border: 'none',
               borderRadius: '6px',

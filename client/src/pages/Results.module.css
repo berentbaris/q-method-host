@@ -309,7 +309,7 @@
 
 .responseCardOpen {
   border-color: var(--color-accent);
-  box-shadow: 0 2px 12px rgba(180, 77, 45, 0.08);
+  box-shadow: 0 2px 12px rgba(58, 124, 126, 0.08);
 }
 
 .responseCardHeader {

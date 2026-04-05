@@ -19,6 +19,8 @@ function safeParse(val) {
 }
 
 const FROM = process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Q-Sort Platform <noreply@qsort.local>'
+// Base URL used to build links in emails (e.g. to the results viewer)
+const BASE_URL = (process.env.BASE_URL || process.env.APP_URL || 'https://q-method.onrender.com').replace(/\/$/, '')
 
 // ---- Send via Resend HTTP API (no SMTP ports needed) ----
 
@@ -113,12 +115,16 @@ function formatResultsEmail(study, response) {
   const minScore = Math.min(...scores)
   const maxScore = Math.max(...scores)
 
+  // Results page URL for this study
+  const resultsUrl = `${BASE_URL}/results/${study.id}`
+
   // ---- Plain text version ----
   let text = `New Q-Sort Response\n`
   text += `Participant: ${participantName}\n`
   text += `Study: ${study.title}\n`
   text += `Study code: ${study.id}\n`
   text += `Submitted: ${response.submitted_at || new Date().toISOString()}\n`
+  text += `View all responses: ${resultsUrl}\n`
   text += `${'─'.repeat(50)}\n\n`
 
   text += `SORTED RESULTS\n\n`
@@ -169,6 +175,8 @@ function formatResultsEmail(study, response) {
   .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #444; text-transform: uppercase; letter-spacing: 0.5px; }
   .explanation { background: #fafafa; border-radius: 8px; padding: 16px; margin-bottom: 16px; font-style: italic; line-height: 1.6; }
   .explanation strong { font-style: normal; display: block; margin-bottom: 6px; color: #555; font-size: 13px; }
+  .results-link { margin: -8px 0 20px; font-size: 14px; }
+  .results-link a { color: #3a7c7e; text-decoration: none; font-weight: 500; }
   .footer { margin-top: 32px; color: #999; font-size: 12px; }
 </style>
 </head>
@@ -179,6 +187,9 @@ function formatResultsEmail(study, response) {
     Study: <strong>${escapeHtml(study.title)}</strong> &nbsp;·&nbsp;
     Code: ${escapeHtml(study.id)} &nbsp;·&nbsp;
     ${response.submitted_at || new Date().toISOString()}
+  </p>
+  <p class="results-link">
+    <a href="${escapeHtml(resultsUrl)}">View all responses for this study →</a>
   </p>
 
   <div class="section-title">Sorted Results</div>
