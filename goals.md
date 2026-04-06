@@ -121,7 +121,6 @@ A web app where researchers can organize Q-method studies and participants can c
 **Last updated**: 2026-04-06
 **Active milestone**: Milestone 8 — Q-Analysis feature
 **Last completed**: Full Q-analysis feature — computation engine + interactive UI integrated into Results page
-**Next task**: (none specified — awaiting organizer input on next priorities)
+**Next task**: Make promotion and ESO plan (Milestone 9) based on newly created chatgpt-promotion-advice.md file in the folder. Start working on the plan.
 **Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes (currently defaults to `https://q-method.onrender.com`).
 
-## Conventi
