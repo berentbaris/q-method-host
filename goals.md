@@ -111,18 +111,17 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Add direct "View all responses" link from results emails to the results page — link goes to `{BASE_URL}/results/{study.id}`; BASE_URL env var defaults to `https://q-method.onrender.com`; present in both HTML and plain-text email versions
 - [x] Redesign font and color palette to match Polia brand — switched accent from warm orange (#b44d2d) to brand teal (#3a7c7e); updated all paper/background tokens to cool teal-tinted neutrals; switched body font from DM Sans to Space Grotesk (more distinctive, less AI-generic); Instrument Serif display font kept; fixed all hardcoded rgba(180,77,45) and warm hex values across CSS modules
 
+### Milestone 8 - Q-Analysis feature
+- [x] Build Q-analysis computation engine (`client/src/lib/qAnalysis.js`) — full factor analysis pipeline: Pearson correlation matrix (between persons), PCA factor extraction via Jacobi eigendecomposition, varimax rotation, auto-flagging (significance threshold + communality check), weighted factor scores (Brown 1980 method), z-score conversion, distinguishing & consensus statement identification
+- [x] Build Q-analysis UI component (`client/src/components/QAnalysis.jsx` + CSS module) — 5 interactive sections: Overview (eigenvalue scree chart + factor summary table), Correlation matrix (color-coded heatmap with hover values), Factor loadings (rotated loadings table with highlighted flagged participants + communality), Factor scores (z-score table with color coding, sortable by factor), Statement analysis (distinguishing & consensus statements with z-score details)
+- [x] Integrate Q-Analysis tab into Results page — appears as third tab alongside Aggregate and Individual when ≥2 responses exist; configurable number of factors (auto via Kaiser criterion, or manual 2–7)
+
 ## Current Status
 
-**Last updated**: 2026-04-05
-**Active milestone**: Milestone 7 — ongoing
-**Last completed**: Font + color palette redesign (teal/green Polia branding) + direct results link in emails
-**Next task**: (open — no blockers, awaiting new requests)
+**Last updated**: 2026-04-06
+**Active milestone**: Milestone 8 — Q-Analysis feature
+**Last completed**: Full Q-analysis feature — computation engine + interactive UI integrated into Results page
+**Next task**: (none specified — awaiting organizer input on next priorities)
 **Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes (currently defaults to `https://q-method.onrender.com`).
 
-## Conventions & Preferences
-- Use functional React components with hooks
-- Keep components small and single-purpose
-- CSS modules or plain CSS — no Tailwind (to keep aesthetic control)
-- Commit-friendly file structure: `/client` for frontend, `/server` for backend
-- Prefer readable code over clever one-liners
-- Add a short comment above any non-ob        
+## Conventi

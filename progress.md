@@ -1,5 +1,12 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-06 (session 16)
+
+- **Built Q-analysis computation engine** (`client/src/lib/qAnalysis.js`) — implements the full Q-methodology factor analysis pipeline entirely client-side: Pearson correlation matrix between persons, PCA factor extraction via Jacobi eigendecomposition, varimax rotation, auto-flagging (significant loading > 1.96/√n, highest loading, >50% communality), weighted factor scores using Brown (1980) method with z-score conversion, and distinguishing/consensus statement identification
+- **Built Q-analysis interactive UI** (`client/src/components/QAnalysis.jsx` + CSS module) — five navigable sections: Overview (eigenvalue scree chart + factor summary), Correlation matrix (diverging color heatmap with hover tooltips), Factor loadings (varimax-rotated table with highlighted flagged participants and communality column), Factor scores (z-score table with color-coded cells, sortable by any factor), Statement analysis (distinguishing & consensus statement tables with z-score differences)
+- **Integrated Analysis tab into Results page** — third tab ("Q-Analysis") appears alongside Aggregate and Individual when ≥2 responses exist; users can configure factor count (auto via Kaiser criterion or manual 2–7); all computation runs in the browser with memoized results
+- **Verified engine correctness** — tested with synthetic 4-participant × 5-statement data; confirmed proper eigenvalue decomposition, factor extraction, flagging, and z-score computation
+
 ## 2026-04-05 (session 15)
 
 - **Added results page link to emails** — results emails now include a "View all responses for this study →" link (HTML) and a plain-text URL pointing to `{BASE_URL}/results/{study.id}`; `BASE_URL` defaults to `https://q-method.onrender.com` and can be overridden via env var

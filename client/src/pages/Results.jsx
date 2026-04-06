@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { fetchStudyResults } from '../api'
+import QAnalysis from '../components/QAnalysis'
 import styles from './Results.module.css'
 
 /*
@@ -19,8 +20,8 @@ export default function Results() {
 
   // Which response card is expanded
   const [expandedId, setExpandedId] = useState(null)
-  // Toggle between aggregate view and individual responses
-  const [view, setView] = useState('aggregate') // 'aggregate' | 'individual'
+  // Toggle between aggregate view, individual responses, and Q-analysis
+  const [view, setView] = useState('aggregate') // 'aggregate' | 'individual' | 'analysis'
 
   const loadResults = async (code) => {
     setError(null)
@@ -157,6 +158,14 @@ function ResultsView({ data, view, setView, expandedId, setExpandedId }) {
             >
               Individual responses
             </button>
+            {responses.length >= 2 && (
+              <button
+                className={`${styles.toggleBtn} ${view === 'analysis' ? styles.toggleActive : ''}`}
+                onClick={() => setView('analysis')}
+              >
+                Q-Analysis
+              </button>
+            )}
           </div>
 
           {view === 'aggregate' && (
@@ -170,6 +179,10 @@ function ResultsView({ data, view, setView, expandedId, setExpandedId }) {
               expandedId={expandedId}
               setExpandedId={setExpandedId}
             />
+          )}
+
+          {view === 'analysis' && (
+            <QAnalysis study={study} responses={responses} />
           )}
         </>
       )}
