@@ -1,5 +1,13 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-07 (session 17)
+
+- **Created Milestone 9 promotion & SEO plan** in goals.md — based on chatgpt-promotion-advice.md; structured as technical SEO tasks (automated) and outreach tasks (manual/organizer action)
+- **Built 4 SEO landing pages** targeting low-competition keywords: `/q-methodology-tool` (features + comparison table), `/online-q-sort-tool` (participant experience walkthrough), `/q-methodology-explained` (practical Q-method introduction for researchers), `/q-method-analysis-guide` (factor analysis pipeline guide from correlation to interpretation); each page is 800–1500 words of real content with CTAs, comparison tables, and process step breakdowns
+- **Added SEO infrastructure** — `sitemap.xml` (8 URLs with priorities) and `robots.txt` in `client/public/`; per-page `<title>` and `<meta description>` updates via `useEffect` on each SEO page
+- **Added internal linking** — "Guides and resources" card grid on Landing page linking to all 4 SEO pages; footer nav with links to all guides; cross-links ("Related Guides") section at the bottom of each SEO page for interlinking
+- **Shared CSS module** (`SeoPage.module.css`) — editorial long-form article styles including hero with breadcrumb, article prose, callout boxes, CTA blocks, comparison tables, numbered process steps, all using existing design tokens
+
 ## 2026-04-06 (session 16)
 
 - **Built Q-analysis computation engine** (`client/src/lib/qAnalysis.js`) — implements the full Q-methodology factor analysis pipeline entirely client-side: Pearson correlation matrix between persons, PCA factor extraction via Jacobi eigendecomposition, varimax rotation, auto-flagging (significant loading > 1.96/√n, highest loading, >50% communality), weighted factor scores using Brown (1980) method with z-score conversion, and distinguishing/consensus statement identification

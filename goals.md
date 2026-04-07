@@ -116,11 +116,24 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Build Q-analysis UI component (`client/src/components/QAnalysis.jsx` + CSS module) — 5 interactive sections: Overview (eigenvalue scree chart + factor summary table), Correlation matrix (color-coded heatmap with hover values), Factor loadings (rotated loadings table with highlighted flagged participants + communality), Factor scores (z-score table with color coding, sortable by factor), Statement analysis (distinguishing & consensus statements with z-score details)
 - [x] Integrate Q-Analysis tab into Results page — appears as third tab alongside Aggregate and Individual when ≥2 responses exist; configurable number of factors (auto via Kaiser criterion, or manual 2–7)
 
+### Milestone 9 — Promotion & SEO
+- [x] Create promotion plan based on chatgpt-promotion-advice.md
+- [x] Build 4 SEO landing pages as content-rich guides (each ~800–1500 words targeting a specific keyword):
+  - `/q-methodology-tool` — "Q methodology tool" keyword
+  - `/online-q-sort-tool` — "online Q sort tool" keyword
+  - `/q-methodology-explained` — "what is Q methodology" keyword
+  - `/q-method-analysis-guide` — "Q method analysis" keyword
+- [x] Create `sitemap.xml` for Google Search Console submission
+- [x] Create `robots.txt` with sitemap reference
+- [ ] Set up Google Search Console and submit sitemap (manual — organizer action)
+- [ ] Post in academic communities: Reddit (r/academia, r/PhD, r/socialscience), ResearchGate, LinkedIn groups
+- [ ] Email researchers using Q-method to request inclusion in course materials / methods sections
+- [ ] Reach out to university "research tools" pages for backlinks
+
 ## Current Status
 
-**Last updated**: 2026-04-06
-**Active milestone**: Milestone 8 — Q-Analysis feature
-**Last completed**: Full Q-analysis feature — computation engine + interactive UI integrated into Results page
-**Next task**: Make promotion and ESO plan (Milestone 9) based on newly created chatgpt-promotion-advice.md file in the folder. Start working on the plan.
-**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes (currently defaults to `https://q-method.onrender.com`).
-
+**Last updated**: 2026-04-07
+**Active milestone**: Milestone 9 — Promotion & SEO
+**Last completed**: SEO landing pages, sitemap.xml, robots.txt — technical SEO foundation complete
+**Next task**: Manual promotion steps: set up Google Search Console, submit sitemap, start community outreach (Reddit, ResearchGate, LinkedIn), email researchers for backlinks
+**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes. (4) Organizer needs to set up Google Search Console and submit sitemap manually. (5) Organizer needs to do community outreach posts and researcher emails — drafts provided in the SEO pages themselves.

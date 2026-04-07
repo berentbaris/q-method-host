@@ -1,0 +1,266 @@
+/* ===================================================
+   SEO Landing Pages — Shared Styles
+   Long-form content pages targeting specific keywords.
+   Editorial feel: generous whitespace, readable prose.
+   =================================================== */
+
+.seoPage {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+/* --- Hero / Title Block --- */
+
+.hero {
+  padding: var(--space-3xl) 0 var(--space-xl);
+  max-width: var(--content-width);
+  border-bottom: 1px solid var(--color-paper-dark);
+  margin-bottom: var(--space-xl);
+}
+
+.breadcrumb {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-md);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.breadcrumb a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.15;
+  font-weight: 400;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin-top: var(--space-md);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--color-ink-light);
+  max-width: 36rem;
+}
+
+/* --- Article Body --- */
+
+.article {
+  max-width: var(--content-width);
+  padding-bottom: var(--space-3xl);
+}
+
+.article h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-md);
+}
+
+.article h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.article p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--color-ink-light);
+  margin-bottom: var(--space-md);
+}
+
+.article ul,
+.article ol {
+  margin: var(--space-md) 0;
+  padding-left: 1.5rem;
+}
+
+.article li {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-ink-light);
+  margin-bottom: var(--space-sm);
+}
+
+.article strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.article em {
+  font-style: italic;
+}
+
+/* --- Callout / Highlight Box --- */
+
+.callout {
+  background-color: var(--color-paper-warm);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 8px 8px 0;
+  padding: var(--space-lg) var(--space-xl);
+  margin: var(--space-xl) 0;
+}
+
+.callout p {
+  color: var(--color-ink);
+  margin-bottom: var(--space-sm);
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+/* --- CTA Block --- */
+
+.cta {
+  background-color: var(--color-paper-warm);
+  border-radius: 8px;
+  padding: var(--space-xl);
+  margin: var(--space-2xl) 0;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  margin-bottom: var(--space-sm);
+}
+
+.ctaText {
+  font-size: 0.95rem;
+  color: var(--color-ink-light);
+  margin-bottom: var(--space-lg);
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.85rem 1.6rem;
+  background-color: var(--color-accent);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.15s var(--ease-out);
+}
+
+.ctaButton:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.ctaArrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.ctaButton:hover .ctaArrow {
+  transform: translateX(3px);
+}
+
+/* --- Comparison Table --- */
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-xl) 0;
+  font-size: 0.9rem;
+}
+
+.comparisonTable th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-ink);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 2px solid var(--color-paper-dark);
+  background-color: var(--color-paper-warm);
+}
+
+.comparisonTable td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-paper-dark);
+  color: var(--color-ink-light);
+  vertical-align: top;
+}
+
+.comparisonTable tr:hover td {
+  background-color: var(--color-paper-warm);
+}
+
+.checkMark {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.crossMark {
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+/* --- Steps / Numbered Process --- */
+
+.processSteps {
+  counter-reset: step;
+  margin: var(--space-xl) 0;
+}
+
+.processStep {
+  counter-increment: step;
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: var(--space-xl);
+}
+
+.processStep::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--color-paper-dark);
+}
+
+.processStep h3 {
+  margin-top: 0;
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 640px) {
+  .hero {
+    padding: var(--space-2xl) 0 var(--space-lg);
+  }
+
+  .comparisonTable {
+    font-size: 0.82rem;
+  }
+
+  .comparisonTable th,
+  .comparisonTable td {
+    padding: var(--space-xs) var(--space-sm);
+  }
+}

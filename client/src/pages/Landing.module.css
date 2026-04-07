@@ -168,6 +168,46 @@
   color: var(--color-ink-light);
 }
 
+/* --- Guides / Resources --- */
+
+.guides {
+  padding: var(--space-2xl) 0;
+  border-top: 1px solid var(--color-paper-dark);
+}
+
+.guideGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-lg);
+}
+
+.guideCard {
+  display: block;
+  padding: var(--space-lg);
+  background-color: var(--color-paper-warm);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.15s var(--ease-out);
+}
+
+.guideCard:hover {
+  background-color: var(--color-accent-light);
+  transform: translateY(-2px);
+}
+
+.guideTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: var(--space-sm);
+}
+
+.guideDesc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-ink-light);
+}
+
 /* --- FAQ --- */
 
 .faq {

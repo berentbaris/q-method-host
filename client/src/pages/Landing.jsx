@@ -138,6 +138,41 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Resources / Guides */}
+      <section className={styles.guides}>
+        <h2 className={styles.sectionTitle}>Guides and resources</h2>
+        <div className={styles.guideGrid}>
+          <Link to="/q-methodology-explained" className={styles.guideCard}>
+            <h3 className={styles.guideTitle}>What is Q-methodology?</h3>
+            <p className={styles.guideDesc}>
+              A practical introduction — when to use it, how it works, and how it
+              differs from surveys. Written for researchers new to the method.
+            </p>
+          </Link>
+          <Link to="/online-q-sort-tool" className={styles.guideCard}>
+            <h3 className={styles.guideTitle}>How the online Q-sort works</h3>
+            <p className={styles.guideDesc}>
+              A walkthrough of the three-stage participant experience: triage,
+              pyramid placement, and explanations.
+            </p>
+          </Link>
+          <Link to="/q-method-analysis-guide" className={styles.guideCard}>
+            <h3 className={styles.guideTitle}>Q-method analysis guide</h3>
+            <p className={styles.guideDesc}>
+              From correlation matrices to factor interpretation — a practical
+              guide to analyzing Q-sort data.
+            </p>
+          </Link>
+          <Link to="/q-methodology-tool" className={styles.guideCard}>
+            <h3 className={styles.guideTitle}>About this tool</h3>
+            <p className={styles.guideDesc}>
+              Features, comparison with other Q-method software, and who uses
+              this platform.
+            </p>
+          </Link>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className={styles.faq}>
         <h2 className={styles.sectionTitle}>Frequently asked questions</h2>

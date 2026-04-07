@@ -20,7 +20,7 @@ function safeParse(val) {
 
 const FROM = process.env.EMAIL_FROM || process.env.SMTP_FROM || 'Q-Sort Platform <noreply@qsort.local>'
 // Base URL used to build links in emails (e.g. to the results viewer)
-const BASE_URL = (process.env.BASE_URL || process.env.APP_URL || 'https://q-method.onrender.com').replace(/\/$/, '')
+const BASE_URL = (process.env.BASE_URL || process.env.APP_URL || 'https://qmethod.polia.nl').replace(/\/$/, '')
 
 // ---- Send via Resend HTTP API (no SMTP ports needed) ----
 
