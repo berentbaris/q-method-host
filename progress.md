@@ -1,5 +1,13 @@
 # Q-Method Platform — Progress Log
 
+## 2026-04-30 (session 18)
+
+- **Completed Milestone 10 — Promotion research**: created `promotion-research.md` with comprehensive outreach targets
+- **Identified 11 Reddit subreddits** for posting (r/AskAcademia, r/socialscience, r/qualitativeresearch, r/PhD, etc.) with posting strategy tips
+- **Found key ResearchGate threads** where the tool can be mentioned as a free alternative (threads on free Q-method software and online Q-sort platforms)
+- **Compiled researcher contact list** — 7 core Q-method figures (Steven Brown, Susan Ramlo, Peter Schmolck, Aiora Zabala, Shawn Banasick, Simon Watts, Paul Stenner) + 7 recent authors (2024–2025 papers) with suggested email template
+- **Mapped 12 backlink targets** — 7 university LibGuides (NYU, UCSF, George Mason, etc.) and 5 Q-method-specific resource pages (qmethod.org, qmethodology.info, schmolck.org) with outreach instructions; also included competitor comparison table for positioning
+
 ## 2026-04-07 (session 17)
 
 - **Created Milestone 9 promotion & SEO plan** in goals.md — based on chatgpt-promotion-advice.md; structured as technical SEO tasks (automated) and outreach tasks (manual/organizer action)

@@ -125,15 +125,18 @@ A web app where researchers can organize Q-method studies and participants can c
   - `/q-method-analysis-guide` — "Q method analysis" keyword
 - [x] Create `sitemap.xml` for Google Search Console submission
 - [x] Create `robots.txt` with sitemap reference
-- [ ] Set up Google Search Console and submit sitemap (manual — organizer action)
-- [ ] Post in academic communities: Reddit (r/academia, r/PhD, r/socialscience), ResearchGate, LinkedIn groups
-- [ ] Email researchers using Q-method to request inclusion in course materials / methods sections
-- [ ] Reach out to university "research tools" pages for backlinks
+- [x] Set up Google Search Console and submit sitemap (manual — organizer action)
+
+### Milestone 10 — Promotion research ✅
+- [x] Find academic communities to post about the new tool: Reddit (r/academia, r/PhD, r/socialscience), ResearchGate, LinkedIn groups
+- [x] Find researchers using Q-method to email to request inclusion in course materials / methods sections
+- [x] Find university "research tools" pages for backlinks to reach out to.
+- [x] Put all findings in a new .md file.
 
 ## Current Status
 
-**Last updated**: 2026-04-07
-**Active milestone**: Milestone 9 — Promotion & SEO
-**Last completed**: SEO landing pages, sitemap.xml, robots.txt — technical SEO foundation complete
-**Next task**: Manual promotion steps: set up Google Search Console, submit sitemap, start community outreach (Reddit, ResearchGate, LinkedIn), email researchers for backlinks
-**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes. (4) Organizer needs to set up Google Search Console and submit sitemap manually. (5) Organizer needs to do community outreach posts and researcher emails — drafts provided in the SEO pages themselves.
+**Last updated**: 2026-04-30
+**Active milestone**: Milestone 10 — Promotion research (complete)
+**Last completed**: Promotion research — compiled `promotion-research.md` with 11 Reddit subreddits, ResearchGate threads, Q-method mailing list, 7 core researchers + 7 recent authors to contact, 7 university LibGuides + 5 Q-method-specific resource pages for backlinks, competitor comparison table, email template, and prioritized action list
+**Next task**: Execute the promotion plan: (1) subscribe to q-method@listserv.kent.edu and post an announcement, (2) answer ResearchGate threads, (3) email qmethod.org and Peter Schmolck for software page inclusion, (4) post on Reddit, (5) email researchers for feedback
+**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes. (4) Organizer needs to set up Google Search Console and submit sitemap manually. (5) All promotion actions in Milestone 10 are manual/organizer tasks — see `promotion-research.md` for the full plan and prioritized action list.
