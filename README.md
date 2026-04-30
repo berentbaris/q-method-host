@@ -1,6 +1,7 @@
 # Q-Method — Online Q-Sort Studies
 
 A web app where researchers create Q-method studies and participants complete Q-sort interviews online. No accounts required — studies are accessed via unique codes.
+Accessible via: https://qmethod.polia.nl/
 
 ## How it works
 
