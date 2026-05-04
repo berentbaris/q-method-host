@@ -17,7 +17,7 @@ export default function Footer() {
           </nav>
         </div>
         <a
-          href="https://buymeacoffee.com/polia"
+          href="https://buymeacoffee.com/berentbaris"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.support}

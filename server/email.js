@@ -87,7 +87,7 @@ function getEmailMethod() {
 
 // ---- Format a single response into a readable email ----
 
-const SPONSORS_URL = process.env.SPONSORS_URL || 'https://buymeacoffee.com/polia'
+const SPONSORS_URL = process.env.SPONSORS_URL || 'https://buymeacoffee.com/berentbaris'
 
 function formatResultsEmail(study, response) {
   const statements = safeParse(study.statements)

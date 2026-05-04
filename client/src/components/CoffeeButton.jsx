@@ -9,7 +9,7 @@ import styles from './CoffeeButton.module.css'
 export default function CoffeeButton() {
   return (
     <a
-      href="https://buymeacoffee.com/polia"
+      href="https://buymeacoffee.com/berentbaris"
       target="_blank"
       rel="noopener noreferrer"
       className={styles.button}
