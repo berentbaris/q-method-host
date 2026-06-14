@@ -176,7 +176,7 @@ function formatResultsEmail(study, response) {
   .explanation { background: #fafafa; border-radius: 8px; padding: 16px; margin-bottom: 16px; font-style: italic; line-height: 1.6; }
   .explanation strong { font-style: normal; display: block; margin-bottom: 6px; color: #555; font-size: 13px; }
   .results-link { margin: -8px 0 20px; font-size: 14px; }
-  .results-link a { color: #3a7c7e; text-decoration: none; font-weight: 500; }
+  .results-link a { color: #6d4c3d; text-decoration: none; font-weight: 500; }
   .footer { margin-top: 32px; color: #999; font-size: 12px; }
 </style>
 </head>

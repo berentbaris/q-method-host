@@ -409,7 +409,7 @@ function zScoreColor(z) {
   // From soft red (low) through white (mid) to soft teal (high)
   if (t >= 0.5) {
     const s = (t - 0.5) * 2
-    return `rgba(58, 124, 126, ${s * 0.15})`
+    return `rgba(109, 76, 61, ${s * 0.15})`
   } else {
     const s = (0.5 - t) * 2
     return `rgba(192, 57, 43, ${s * 0.15})`

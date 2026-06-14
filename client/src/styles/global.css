@@ -1,26 +1,26 @@
 /* ===================================================
    Q-Method Platform — Global Styles
-   Typefaces: Instrument Serif (display), Space Grotesk (body)
-   Color palette: teal/blue-green — matches Polia brand
+   Typefaces: Crimson Pro (display), Source Sans 3 (body)
+   Color palette: warm umber / scholarly earth tones
    =================================================== */
 
 :root {
-  /* Teal-tinted neutral palette (Polia brand: #3a7c7e) */
-  --color-ink: #1a2224;
-  --color-ink-light: #4a5e60;
-  --color-ink-muted: #7a9194;
-  --color-paper: #f7fbfb;
-  --color-paper-warm: #ecf5f4;
-  --color-paper-dark: #cddede;
-  --color-accent: #3a7c7e;
-  --color-accent-hover: #2d6365;
-  --color-accent-light: #d2eaea;
-  --color-success: #2d7a5a;
-  --color-error: #c0392b;
+  /* Warm scholarly palette */
+  --color-ink: #2d2926;
+  --color-ink-light: #5c5550;
+  --color-ink-muted: #918a83;
+  --color-paper: #faf7f3;
+  --color-paper-warm: #f0ebe4;
+  --color-paper-dark: #d8d0c6;
+  --color-accent: #6d4c3d;
+  --color-accent-hover: #553a2e;
+  --color-accent-light: #ebe0d6;
+  --color-success: #4a7c50;
+  --color-error: #b5392b;
 
   /* Typography */
-  --font-display: 'Instrument Serif', 'Georgia', serif;
-  --font-body: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+  --font-display: 'Crimson Pro', 'Georgia', serif;
+  --font-body: 'Source Sans 3', 'Helvetica Neue', sans-serif;
 
   /* Spacing scale */
   --space-xs: 0.25rem;
