@@ -62,13 +62,14 @@ export default function Landing() {
       {/* Hero section */}
       <section className={styles.hero}>
         <h1 className={styles.title}>
-          Run Q-sort studies,<br />
-          <span className={styles.titleAccent}>entirely online.</span>
+          Run Q-studies,{' '}
+          entirely online.
         </h1>
         <p className={styles.subtitle}>
-          Create a study, share a link, and collect ranked responses —
-          no accounts, no installs, no fees. Completely free, forever.
-          Built for researchers who want to focus on the method, not the logistics.
+          Create a study, share a link, collect ranked responses, and
+          analyze results — no accounts, no installs, no fees. Completely
+          free, forever. Built for researchers who want to focus on the
+          method, not the logistics.
         </p>
         <div className={styles.actions}>
           <Link to="/create" className={styles.btnPrimary}>
@@ -110,6 +111,16 @@ export default function Landing() {
               Participants sort statements through a guided three-stage
               process: triage, pyramid placement, and explanation.
               Results are emailed to you as they come in.
+            </p>
+          </div>
+          <div className={styles.step}>
+            <span className={styles.stepNumber}>4</span>
+            <h3 className={styles.stepTitle}>Analyze results</h3>
+            <p className={styles.stepDesc}>
+              View aggregate rankings and individual responses in the
+              built-in results viewer, then run the full Q-analysis
+              pipeline — correlation, factor extraction, rotation, and
+              interpretation — directly on the platform.
             </p>
           </div>
         </div>

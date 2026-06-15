@@ -26,10 +26,6 @@
   letter-spacing: -0.01em;
 }
 
-.titleAccent {
-  color: var(--color-accent);
-}
-
 .subtitle {
   margin-top: var(--space-lg);
   font-size: 1.1rem;
