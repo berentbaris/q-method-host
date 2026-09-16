@@ -38,11 +38,11 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  line-height: 1.15;
-  font-weight: 400;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  font-weight: 700;
   color: var(--color-ink);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
@@ -62,8 +62,8 @@
 
 .article h2 {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 400;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: var(--color-ink);
   margin-top: var(--space-2xl);
   margin-bottom: var(--space-md);
@@ -137,8 +137,8 @@
 
 .ctaTitle {
   font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 400;
+  font-size: 1.3rem;
+  font-weight: 600;
   color: var(--color-ink);
   margin-bottom: var(--space-sm);
 }
@@ -239,7 +239,8 @@
   left: 0;
   top: 0;
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+  font-weight: 700;
   line-height: 1;
   color: var(--color-paper-dark);
 }

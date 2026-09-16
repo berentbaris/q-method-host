@@ -1,26 +1,26 @@
 /* ===================================================
    Q-Method Platform — Global Styles
-   Typefaces: Crimson Pro (display), Source Sans 3 (body)
-   Color palette: warm umber / scholarly earth tones
+   Typeface: Plus Jakarta Sans
+   Color palette: cool neutrals + Polia teal
    =================================================== */
 
 :root {
-  /* Warm scholarly palette */
-  --color-ink: #2d2926;
-  --color-ink-light: #5c5550;
-  --color-ink-muted: #918a83;
-  --color-paper: #faf7f3;
-  --color-paper-warm: #f0ebe4;
-  --color-paper-dark: #d8d0c6;
-  --color-accent: #6d4c3d;
-  --color-accent-hover: #553a2e;
-  --color-accent-light: #ebe0d6;
-  --color-success: #4a7c50;
-  --color-error: #b5392b;
+  /* Cool neutral palette */
+  --color-ink: #111827;
+  --color-ink-light: #4b5563;
+  --color-ink-muted: #9ca3af;
+  --color-paper: #ffffff;
+  --color-paper-warm: #f3f4f6;
+  --color-paper-dark: #e5e7eb;
+  --color-accent: #3a7c7e;
+  --color-accent-hover: #2c6163;
+  --color-accent-light: #e0f0f0;
+  --color-success: #059669;
+  --color-error: #dc2626;
 
-  /* Typography */
-  --font-display: 'Crimson Pro', 'Georgia', serif;
-  --font-body: 'Source Sans 3', 'Helvetica Neue', sans-serif;
+  /* Typography — single family */
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
   /* Spacing scale */
   --space-xs: 0.25rem;

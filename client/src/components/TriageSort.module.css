@@ -10,8 +10,8 @@
 
 .heading {
   font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 400;
+  font-size: 1.6rem;
+  font-weight: 700;
   margin-bottom: var(--space-sm);
   text-align: center;
 }
@@ -373,7 +373,7 @@
 
 .summaryCount {
   font-size: 2rem;
-  font-weight: 300;
+  font-weight: 700;
   font-family: var(--font-display);
 }
 
