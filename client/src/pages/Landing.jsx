@@ -33,7 +33,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What happens to my data?',
-    a: 'Study data and responses are stored on our server so participants can access your study via its code. Results are emailed to you as they come in. We don\'t share or sell data, and there are no analytics trackers on this site.',
+    a: <>Study information and submitted responses are stored on the server, and response emails are sent to organizer addresses. Anyone with the study code can also view the responses, including names and explanations. Use non-identifying aliases and avoid sensitive information. Read the <Link to="/about#data-handling">data-handling explanation</Link> before setting up your study.</>,
   },
 ]
 

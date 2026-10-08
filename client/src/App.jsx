@@ -4,6 +4,7 @@ import CreateStudy from './pages/CreateStudy'
 import Participate from './pages/Participate'
 import Results from './pages/Results'
 import NotFound from './pages/NotFound'
+import About from './pages/About'
 import QMethodologyTool from './pages/QMethodologyTool'
 import OnlineQSortTool from './pages/OnlineQSortTool'
 import QMethodologyExplained from './pages/QMethodologyExplained'
@@ -17,6 +18,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Landing />} />
+          <Route path="/about" element={<About />} />
           <Route path="/create" element={<CreateStudy />} />
           <Route path="/participate" element={<Participate />} />
           <Route path="/study/:code" element={<Participate />} />

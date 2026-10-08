@@ -85,7 +85,24 @@
   color: var(--color-accent);
 }
 
-/* On small screens, hide the Polia logo to save space */
+/* Keep branding and navigation readable on narrow screens. */
+@media (max-width: 640px) {
+  .inner {
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .navLink {
+    font-size: 0.85rem;
+  }
+}
+
 @media (max-width: 520px) {
   .poliaLogo {
     height: 28px;

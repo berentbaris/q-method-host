@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { runAnalysis } from '../lib/qAnalysis'
 import styles from './QAnalysis.module.css'
 
@@ -39,6 +40,10 @@ export default function QAnalysis({ study, responses }) {
 
   return (
     <div className={styles.analysis}>
+      <p className={styles.cardDesc}>
+        Exploratory analysis: statement labels use a fixed z-score difference threshold,
+        not significance tests. Read the <Link to="/about#analysis-methods">methods and limitations</Link>.
+      </p>
       {/* Controls bar */}
       <div className={styles.controls}>
         <div className={styles.factorControl}>
@@ -435,7 +440,7 @@ function StatementsSection({ analysis, study }) {
           <span className={styles.badge}>{distinguishing.length}</span>
         </h4>
         <p className={styles.cardDesc}>
-          Statements that significantly differentiate one factor from the others.
+          Statements highlighted by the exploratory difference rule, not a significance test.
           A statement is distinguishing when its z-score on one factor differs by ≥1.0 from the
           average of the other factors.
         </p>
@@ -487,7 +492,7 @@ function StatementsSection({ analysis, study }) {
           <span className={styles.badge}>{consensus.length}</span>
         </h4>
         <p className={styles.cardDesc}>
-          Statements that all factors agree on — z-scores are similar across all factors
+          Statements with similar z-scores across factors, not necessarily shared agreement
           (max pairwise difference &lt; 1.0).
         </p>
 

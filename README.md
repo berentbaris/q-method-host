@@ -12,6 +12,15 @@ Accessible via: https://qmethod.polia.nl/
    - **Explanations** — explain their most extreme choices
 3. Results are saved and emailed to the organizer(s)
 
+## Research documentation
+
+The `/about` page identifies the maintainer and ORCID, describes current data handling,
+provides a suggested software citation and BibTeX entry, and documents the implemented
+analysis pipeline and its limitations. Update that page when access controls, storage,
+email delivery, retention, or analysis behavior changes. The current study code also
+grants access to results; statement labels in the dashboard are exploratory rather
+than significance-tested.
+
 ## Tech stack
 
 - **Frontend**: React 18 + Vite + React Router, CSS modules

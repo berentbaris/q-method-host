@@ -3,7 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { existsSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
+import { renderAboutHtml } from './aboutMetadata.js'
 import { initDatabase } from './db.js'
 import studiesRouter from './routes/studies.js'
 import responsesRouter from './routes/responses.js'
@@ -87,6 +88,10 @@ app.use('/api/studies', responsesRouter)
 const CLIENT_DIST = join(__dirname, '..', 'client', 'dist')
 
 if (IS_PRODUCTION || existsSync(CLIENT_DIST)) {
+  app.get(['/about', '/about/'], (_req, res) => {
+    const html = readFileSync(join(CLIENT_DIST, 'index.html'), 'utf8')
+    res.type('html').send(renderAboutHtml(html))
+  })
   app.use(express.static(CLIENT_DIST))
 
   // All non-API routes serve index.html (SPA client-side routing)

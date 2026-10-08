@@ -13,7 +13,10 @@ export default function Footer() {
             <Link to="/q-methodology-explained">What is Q-method?</Link>
             <Link to="/online-q-sort-tool">How it works</Link>
             <Link to="/q-method-analysis-guide">Analysis guide</Link>
-            <Link to="/q-methodology-tool">About this tool</Link>
+            <Link to="/q-methodology-tool">Tool overview</Link>
+            <Link to="/about">About &amp; maintainer</Link>
+            <Link to="/about#data-handling">Data handling</Link>
+            <Link to="/about#citation">Cite this tool</Link>
           </nav>
         </div>
         <a

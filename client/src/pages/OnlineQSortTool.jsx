@@ -171,9 +171,11 @@ export default function OnlineQSortTool() {
         <h2>Data and Privacy</h2>
         <p>
           Study data and responses are stored on the server so that participants can access the
-          study via its code. Results are emailed to organizer addresses as they come in. The
-          platform does not require accounts, does not use analytics trackers, and does not
-          share or sell data.
+          study via its code. Response emails are sent to organizer addresses. Anyone with
+          the study code can also view results, including participant names and explanations;
+          there is no separate organizer password. Use non-identifying aliases and avoid
+          sensitive information. Review the <Link to="/about#data-handling">data-handling
+          explanation</Link> for storage, email delivery, retention, and third-party requests.
         </p>
 
         <div className={styles.callout}>

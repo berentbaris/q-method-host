@@ -26,6 +26,14 @@ export default function QMethodAnalysisGuide() {
       </section>
 
       <article className={styles.article}>
+        <div className={styles.callout}>
+          <p>
+            <strong>About the built-in dashboard.</strong> This guide introduces the method.
+            The current dashboard uses exploratory statement labels without standard-error
+            or p-value calculations. See the <Link to="/about#analysis-methods">implemented
+            methods and limitations</Link> before reporting an analysis.
+          </p>
+        </div>
         <h2>Overview of Q-Method Analysis</h2>
         <p>
           After collecting Q-sort data, the analysis stage identifies groups of participants
@@ -91,9 +99,9 @@ export default function QMethodAnalysisGuide() {
             distinguish, the 3-factor solution is usually better.
           </li>
           <li>
-            <strong>Humphrey's rule:</strong> A factor is significant if it has at least two
-            significant loadings (where a significant loading exceeds 1.96 / √n, with n being
-            the number of statements).
+            <strong>Defining sorts:</strong> Check how many sorts clearly define each factor
+            and whether they support a coherent interpretation. A retained factor with no
+            defining sorts cannot provide an interpretable composite viewpoint.
           </li>
         </ul>
         <p>
@@ -153,9 +161,9 @@ export default function QMethodAnalysisGuide() {
           </li>
         </ul>
         <p>
-          Participants who don't meet these criteria on any factor are "confounded" — their sort
-          represents a mixture of perspectives rather than a clear alignment with one factor.
-          Confounded sorts are excluded from the factor score calculation.
+          Participants who don't meet these criteria are not flagged. This can reflect weak
+          loadings or loadings spread across multiple factors; it does not always indicate
+          a confounded sort. Unflagged sorts are excluded from the factor score calculation.
         </p>
 
         <h2>Stage 5: Computing Factor Scores</h2>
@@ -165,10 +173,11 @@ export default function QMethodAnalysisGuide() {
           loadings contribute more to the composite.
         </p>
         <p>
-          The standard method (Brown, 1980) weights each flagged participant's sort by their
-          factor loading divided by (1 minus the square of the loading), then normalizes by
-          the sum of weights. The result is a weighted average score for each statement on
-          each factor.
+          The weighting approach uses each flagged participant's factor loading divided by
+          (1 minus the square of the loading). The current dashboard adds a small numerical
+          stabilizer to that denominator, divides the weighted sum by the sum of absolute
+          weights, and then standardizes the scores. See the implementation documentation
+          for the exact formula and handling of negative loadings.
         </p>
         <p>
           These raw weighted scores are converted to z-scores (mean 0, standard deviation 1)
@@ -191,6 +200,13 @@ export default function QMethodAnalysisGuide() {
         </div>
 
         <h2>Stage 6: Identifying Distinguishing and Consensus Statements</h2>
+        <p>
+          In the current dashboard, these labels are exploratory: consensus uses a maximum
+          pairwise z-score difference below 1.0; otherwise, distinguishing labels use an
+          absolute difference of at least 1.0 from the average of the other factors.
+          These calculations do not establish statistical significance. The descriptions
+          below explain the broader methodological concepts.
+        </p>
         <p>
           Once factor scores are computed, researchers identify two important categories of
           statements:
