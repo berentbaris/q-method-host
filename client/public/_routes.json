@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "include": [
+    "/api/*",
+    "/",
+    "/about",
+    "/about/",
+    "/create",
+    "/participate",
+    "/study/*",
+    "/results",
+    "/results/*",
+    "/q-methodology-tool",
+    "/online-q-sort-tool",
+    "/q-methodology-explained",
+    "/q-method-analysis-guide"
+  ],
+  "exclude": []
+}

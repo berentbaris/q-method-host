@@ -24,8 +24,10 @@ than significance-tested.
 ## Tech stack
 
 - **Frontend**: React 18 + Vite + React Router, CSS modules
-- **Backend**: Express (Node.js), SQLite via `better-sqlite3`
-- **Email**: Nodemailer (configurable SMTP, or console fallback)
+- **Backend (current production)**: Express (Node.js)
+- **Database (current production)**: SQLite via `better-sqlite3`
+- **Migration target**: Cloudflare Pages Functions + D1
+- **Email**: Resend HTTP API (SMTP is supported only by the legacy Express server)
 
 ## Quick start (local development)
 
@@ -54,22 +56,20 @@ cd client && npm run dev
 
 Open http://localhost:3000 and you're set. The SQLite database is created automatically on first server start at `server/data/qmethod.db`.
 
-## Deploy to Render (recommended)
+## Cloudflare migration
 
-The included `render.yaml` Blueprint provisions the web service with a 1 GB persistent disk for the SQLite database:
+Cloudflare deployment configuration, D1 schema, local development commands, and the data cutover runbook are in [CLOUDFLARE_MIGRATION.md](CLOUDFLARE_MIGRATION.md). The migration uses:
 
-1. Push this repo to GitHub
-2. Go to [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**
-3. Connect your repo and select it
-4. Render reads `render.yaml` and provisions the web service with a persistent disk
-5. (Optional) Add SMTP environment variables in the Render dashboard to enable email delivery
+- Cloudflare Pages for the Vite build in `client/dist`
+- Pages Functions for the `/api/*` routes
+- D1 for studies and participant responses
+- Resend over HTTPS for results emails
 
-That's it — the build command installs deps and builds the React client, and the start command runs the Express server in production mode, serving the client build.
+The production D1 ID and secrets are intentionally not committed. Follow the runbook to configure a separate preview database, production database, Resend key, and cutover.
 
-### Free tier notes
+## Existing Render deployment and data warning
 
-- Render's free web services spin down after 15 minutes of inactivity. First request after idle takes ~30 seconds.
-- The persistent disk keeps your SQLite data safe across deploys and restarts — no expiry.
+The current Render deployment is the legacy Express/SQLite app. The repository's `render.yaml` currently declares `plan: free` and a persistent disk, but [Render's free-service limits](https://render.com/docs/free) say free web services do not support persistent disks and their local filesystem is ephemeral. Do not rely on that configuration to preserve studies or responses. Before cutover, obtain a consistent database backup, verify study and response counts, and follow the migration runbook. Render remains useful only as a rollback target if its production data and service are verified.
 
 ## Deploy with Docker
 

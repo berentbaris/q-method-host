@@ -1,0 +1,54 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "polia-q-method",
+  "pages_build_output_dir": "./client/dist",
+  "compatibility_date": "2026-10-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "polia-qmethod",
+      "database_id": "eab69a81-a8cf-4e06-b43a-2d13acda6766",
+      "preview_database_id": "36e8ee98-908d-4308-b24a-bd410a8f7eb1",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "BASE_URL": "https://qmethod.polia.nl",
+    "EMAIL_FROM": "berent@polia.nl"
+  },
+  "env": {
+    "preview": {
+      "vars": {
+        "ENVIRONMENT": "preview",
+        "BASE_URL": "https://qmethod.polia.nl",
+        "EMAIL_FROM": "berent@polia.nl"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "polia-qmethod-preview",
+          "database_id": "36e8ee98-908d-4308-b24a-bd410a8f7eb1",
+          "preview_database_id": "36e8ee98-908d-4308-b24a-bd410a8f7eb1",
+          "migrations_dir": "migrations"
+        }
+      ]
+    },
+    "production": {
+      "vars": {
+        "ENVIRONMENT": "production",
+        "BASE_URL": "https://qmethod.polia.nl",
+        "EMAIL_FROM": "berent@polia.nl"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "polia-qmethod",
+          "database_id": "eab69a81-a8cf-4e06-b43a-2d13acda6766",
+          "preview_database_id": "36e8ee98-908d-4308-b24a-bd410a8f7eb1",
+          "migrations_dir": "migrations"
+        }
+      ]
+    }
+  }
+}

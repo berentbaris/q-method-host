@@ -8,9 +8,19 @@
     "dev:server": "cd server && npm run dev",
     "build": "cd client && npm run build",
     "start": "cd server && node index.js",
+    "cf:dev": "wrangler pages dev ./client/dist",
+    "cf:d1:migrate:local": "wrangler d1 migrations apply polia-qmethod --local",
+    "cf:d1:migrate:preview": "wrangler d1 migrations apply polia-qmethod --remote --preview",
+    "cf:d1:migrate:remote": "wrangler d1 migrations apply polia-qmethod --remote",
+    "cf:d1:export": "node server/scripts/export-to-d1.js",
+    "cf:deploy": "wrangler pages deploy ./client/dist --project-name=polia-q-method --branch=codex-migration-preview",
+    "cf:deploy:production": "wrangler pages deploy ./client/dist --project-name=polia-q-method --branch=main",
     "postinstall": "cd client && npm install && cd ../server && npm install"
   },
   "engines": {
     "node": "22.x"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
   }
 }

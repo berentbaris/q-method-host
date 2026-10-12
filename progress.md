@@ -1,5 +1,100 @@
 # Q-Method Platform — Progress Log
 
+## 2026-10-12 (session 30)
+
+- **Inspected the authenticated Search Console property** `sc-domain:qmethod.polia.nl`. The report has 4 pages blocked by robots.txt and 0 indexed; report last updated Oct 9, 2026. Examples are three guide URLs and `/create`; their last crawls were Apr 30–Jun 16, 2026.
+- **Started Search Console validation** for the robots.txt issue on Oct 12, 2026. The historical report remains stale while Google processes the validation.
+- **Resubmitted** `https://qmethod.polia.nl/sitemap.xml`; Search Console confirmed “Sitemap submitted successfully.” The existing row showed Success but an old last-read date before processing the new submission.
+- **Ran live URL tests and requested priority crawling** for `/q-methodology-tool`, `/q-methodology-explained`, `/online-q-sort-tool`, `/q-method-analysis-guide`, and `/`. Each live test reported “URL is available to Google,” and each was added to the priority crawl queue.
+- **Production-side fix is deployed**: robots allows all crawlers; the sitemap now includes only six canonical public URLs and excludes `/create`, `/participate`, and `/results`. All six sitemap URLs return HTTP 200 to a Googlebot user-agent with `index, follow` and matching canonicals.
+- **Waiting on Google** to recrawl and update the Indexing report. The `/create` URL remains intentionally outside the sitemap because it canonicalizes to the homepage.
+
+## 2026-10-12 (session 29)
+
+- **Checked the indexing issue after the migration**: live `robots.txt` returns HTTP 200 and allows all crawlers. Every current sitemap URL returns HTTP 200 to a Googlebot user-agent, has `index, follow`, and has a matching canonical URL.
+- **Cleaned and redeployed the sitemap**: removed `/create`, `/participate`, and `/results`, which are app workflows whose canonical URL is the homepage. Production sitemap now lists only the homepage, About page, and four public SEO pages (six canonical URLs total). Build passed and the production Pages deployment succeeded.
+- **Search Console status**: the user reports 4 URLs not indexed (robots.txt) and 0 indexed. The Search Console tab available in this session was signed out; it is left at Google's sign-in page for the user to authenticate. GSC's last-crawl details and its “Validate fix” action still need to be checked there after sign-in.
+
+## 2026-10-12 (session 28)
+
+- **Verified the custom-domain cutover**: `qmethod.polia.nl` resolves to `polia-q-method.pages.dev` at the authoritative nameserver and public resolvers (1.1.1.1 and 8.8.8.8). An initial local DNS answer was stale; public and authoritative answers confirmed the new target.
+- **Smoke-tested the live domain**: `/api/health`, `/api/email-test`, `/`, `/about`, `/sitemap.xml`, and `/robots.txt` all return HTTP 200 through Cloudflare. Resend authentication remains valid; no email was sent as part of the check.
+- **Migration complete**: no study data needed moving, production is on Cloudflare Pages + D1, and the custom domain is routed to Pages. Keep Render available during the rollback window.
+
+## 2026-10-12 (session 27)
+
+- **Confirmed secret configuration**: Cloudflare lists encrypted `RESEND_API_KEY` secrets in both Preview and Production. No secret values were exposed.
+- **Activated and verified Preview email configuration**: redeployed Preview after the secret was set. The exact deployment URL and the stable Preview alias both return `{"status":"ok","method":"resend"}` from `/api/email-test`; this validates Resend authentication without sending a message.
+- **Published Production**: deployed the current build to `https://polia-q-method.pages.dev`. `/api/health`, `/api/email-test`, and `/about` all return HTTP 200; production Resend authentication is valid.
+- **Checked the remaining domain handoff**: Pages currently has only `polia-q-method.pages.dev` attached. `qmethod.polia.nl` still points by CNAME to `q-method-platform.onrender.com`; the `polia.nl` nameservers are Google Domains. Final cutover requires adding `qmethod.polia.nl` as a Pages custom domain and changing the CNAME at the external DNS provider to `polia-q-method.pages.dev`.
+- **Current state**: no study data needs migration; both D1 databases remain empty. Render remains the live domain target until DNS is switched. Keep Render available for rollback while DNS propagates.
+
+## 2026-10-12 (session 26)
+
+- **Maintainer decision**: no current studies need to be migrated from Render. Removed the production SQLite export/import as a cutover gate. Rechecked both Cloudflare D1 databases: each has 0 studies and 0 responses.
+- **Aligned the configured sender**: the live Render email diagnostic reports an active send-only Resend key and sender `berent@polia.nl`. Updated the top-level, Preview, and Production `EMAIL_FROM` values in `wrangler.jsonc` to preserve that sender.
+- **Redeployed and verified Preview**: six public HTML routes return 200 with noindex headers, API health returns 200, and `/api/email-test` reports `no_config` until the key is copied.
+- **Current specific handoff**: in Cloudflare Dashboard, open Workers & Pages → `polia-q-method` → Settings → Variables and Secrets. Add the existing `RESEND_API_KEY` as an encrypted secret in both Preview and Production. No database file is needed. After the Preview key is set, redeploy and run the email test, then finish the production cutover.
+- **Cutover status**: implementation and empty production database are ready; no production deploy or custom-domain change has happened yet.
+
+## 2026-10-12 (session 25)
+
+- **Rechecked migration inputs**: `server/data/qmethod.db` is still absent; there are no local `.env` files or Render/Resend credentials in the process environment. The existing live Render email diagnostic reports a valid send-only Resend key but masks its value.
+- **Confirmed Cloudflare secret state**: both Preview and Production have `RATE_LIMIT_SALT`; neither environment has `RESEND_API_KEY`. Production and Preview D1 currently contain no studies or responses.
+- **Remaining external inputs**: provide a consistent SQLite backup/export and copy the existing Resend key into Cloudflare Pages Preview and Production. Keep the domain cutover gated until D1 counts and a real preview email are verified.
+- **Additional test limitation**: the synthetic SQLite exporter round-trip could not run because the package manager blocked the native `better-sqlite3` install script. No production data was touched.
+
+## 2026-10-12 (session 24)
+
+- **Made deployment targeting explicit**: `npm run cf:deploy` now always deploys the Preview branch, and `npm run cf:deploy:production` is the deliberate production path. This avoids selecting production based on whichever Git branch happens to be checked out.
+- **Updated the runbook** with the preview-first command and production sequence after data reconciliation and smoke tests.
+- **Validation**: checked the package scripts and migration docs; pending source data and the Resend key still block the final data/email verification and production cutover.
+
+## 2026-10-12 (session 23)
+
+- **Checked the current live Render email configuration** through its read-only `/api/email-test` diagnostic. It reports a valid send-only Resend key; no key value was exposed.
+- **Confirmed the Resend key is not available in the workspace or Cloudflare Pages secrets**. The preview's `/api/email-test` returns `no_config`. Email migration is feasible with the existing provider, but the existing key must be copied from Render into Cloudflare Preview and Production.
+- **Current cutover gates**: the production SQLite data backup/export is still absent, and the Resend key has not been transferred. The Cloudflare preview is healthy, both D1 stores are empty, and no custom domain has been changed.
+- **Next**: set the existing Resend key in both Pages environments through Cloudflare settings, verify a real test email on preview, and provide/locate a consistent production SQLite backup for count reconciliation and import.
+
+## 2026-10-12 (session 22)
+
+- **Configured separate random rate-limit salts in both Cloudflare Pages environments** using Wrangler's environment selector. The values were generated and transmitted directly to Cloudflare; they were not printed or committed.
+- **Redeployed the preview** so its Worker now receives the Preview secret. Wrangler's secret listing confirms `RATE_LIMIT_SALT` is encrypted in both Preview and Production.
+- **Reverified the live preview**: the six public HTML routes return 200 with expected titles and `X-Robots-Tag: noindex, nofollow`; `/api/health` returns 200. `/api/email-test` returns `no_config`, confirming the Resend key is still missing.
+- **Production remains untouched by preview work**: no domain cutover or study-data import. Both D1 databases remain empty per the most recent count check.
+- **Next at that point**: configure `RESEND_API_KEY` for Preview and Production; session 23 confirmed the current live key exists but is not yet available in Cloudflare.
+
+## 2026-10-12 (session 21)
+
+- **Protected production SEO from preview duplication**: set an explicit preview environment marker and add `X-Robots-Tag: noindex, nofollow` to preview HTML responses. Production rendering and canonical URLs remain unchanged.
+- **Built and redeployed the preview** at `https://codex-migration-preview.polia-q-method.pages.dev`. Verified all six public HTML routes return 200 with the expected titles and noindex header; `/api/health` also returns 200.
+- **Rechecked both D1 databases after deployment**: production and preview each still have zero studies and zero responses.
+- **Configured a generated production rate-limit salt** as a Cloudflare Pages secret. Its value was generated and stored directly without displaying or committing it. The Pages project currently has no Resend API key; the separate Preview salt was configured in session 22.
+- **Build verification**: Vite production build passed. `git diff --check` passed.
+- **Next**: configure the Resend key and preview salt in the Pages dashboard, then obtain and verify the source SQLite backup before importing data. Keep production domain cutover gated on data reconciliation and email verification.
+
+## 2026-10-12 (session 20)
+
+- **Provisioned Cloudflare resources**: authenticated to the configured account, created separate `polia-qmethod` production and `polia-qmethod-preview` D1 databases in WEUR, applied the schema to both, and created the `polia-q-method` Pages project.
+- **Deployed a public preview** at `https://codex-migration-preview.polia-q-method.pages.dev` with explicit `env.preview` D1 bindings. An initial deployment exposed that Pages preview did not use `preview_database_id` as expected; removed that deployment, cleaned the one temporary smoke-test record from production, added explicit environment bindings, and verified subsequent preview writes went only to preview D1.
+- **Verified the deployed preview**: homepage, About, all four SEO guides, `sitemap.xml`, `robots.txt`, and `/api/health` returned 200 with the expected page titles. Re-ran read-only counts after cleanup: production and preview each contain 0 studies and 0 responses.
+- **No production cutover has happened**: the custom domain still has not been changed, no production study data has been imported, and both D1 databases are empty. The source SQLite file is absent from the repository. A consistent production export and count reconciliation are required before import.
+- **Secrets and email**: `RESEND_API_KEY` and a random `RATE_LIMIT_SALT` still need to be configured as Pages secrets. Resend delivery has not been tested because no API key is available in the workspace.
+- **Next**: add the secrets through Cloudflare's dashboard, test preview email delivery, obtain/back up the source database, import and reconcile its contents, complete final preview acceptance, and only then schedule production domain cutover.
+
+## 2026-10-12 (session 19)
+
+- **Implemented Cloudflare Pages + Pages Functions + D1 path**: added Wrangler configuration, static route rules, D1 schema, and a Worker API that preserves health, study creation/fetch, response submission, results, email diagnostics, and Resend notifications.
+- **Moved submission throttling to D1**: rate limiting now uses a SHA-256 IP hash with a configurable salt instead of an in-memory Node process map.
+- **Preserved crawl metadata**: direct HTML responses now carry production canonicals and unique titles/descriptions on the homepage, About page, and four guide pages; AboutPage JSON-LD remains available. Static `robots.txt` and sitemap continue to be served.
+- **Updated the About data-handling disclosure** for D1 storage, Resend delivery, retention/deletion limits, and hashed IP rate-limit records; exact backup/region policies remain a maintainer confirmation item.
+- **Added data migration material**: SQLite-to-D1 export script plus `CLOUDFLARE_MIGRATION.md` covering backups, preview/production separation, import, smoke tests, rollback, secrets, and cutover.
+- **Corrected hosting guidance**: README no longer claims that Render Free has a persistent disk; documented that the current `render.yaml` Free plan + disk declaration conflicts with Render's free-service limits.
+- **Verified locally**: Vite production build succeeded; Wrangler 4.149 applied the D1 migration locally; local smoke test passed health, all six public SEO routes, sitemap/robots, study creation, study fetch, response submission, and results retrieval. Email delivery is not tested without a Resend key.
+- **External prerequisites at that point**: production database export/backup, Cloudflare resources, deployment secrets, and domain/DNS changes. Cloudflare resources and preview deployment were completed in session 20; the remaining data, secret, and cutover work is recorded above.
+- **Next at that point**: provision Cloudflare resources and deploy/test preview; completed in session 20.
+
 ## 2026-04-30 (session 18)
 
 - **Completed Milestone 10 — Promotion research**: created `promotion-research.md` with comprehensive outreach targets

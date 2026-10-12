@@ -26,11 +26,11 @@ A web app where researchers can organize Q-method studies and participants can c
 
 ## Tech Stack Preferences
 - **Frontend**: React (single-page app, no page reloads between steps)
-- **Backend**: Node.js + Express (or equivalent lightweight server)
-- **Database**: SQLite via `better-sqlite3` (persistent disk on Render)
-- **Email**: Nodemailer or Resend API for sending results to organizers
+- **Backend**: Cloudflare Workers / Pages Functions
+- **Database**: Cloudflare D1 (SQLite-compatible managed database)
+- **Email**: Resend API over HTTPS for sending results to organizers
 - **Styling**: CSS with a distinctive, editorial aesthetic — avoid generic AI-slop design
-- **Hosting target**: Vercel, Netlify, or similar
+- **Hosting target**: Cloudflare Pages + Workers + D1 (migration in progress)
 
 ## Design Direction
 - Clean, academic-but-friendly aesthetic. Think: a well-designed research tool, not a corporate SaaS.
@@ -133,10 +133,45 @@ A web app where researchers can organize Q-method studies and participants can c
 - [x] Find university "research tools" pages for backlinks to reach out to.
 - [x] Put all findings in a new .md file.
 
+### Milestone 11 — Migrate to Cloudflare Pages + Workers + D1
+- [x] Preserve the existing React routes and public SEO pages on Cloudflare Pages
+- [x] Port Express API routes to Cloudflare Pages Functions / Workers
+- [x] Migrate persistence from native `better-sqlite3` to Cloudflare D1 with schema and migration scripts
+- [x] Preserve study creation, participant submissions, results viewing, validation, and email notifications
+- [x] Replace per-process IP throttling with a Workers-compatible abuse-control approach
+- [x] Add local development and test workflows using Wrangler and a local D1 database
+- [x] Verify direct navigation and SEO metadata for `/`, `/about`, and all guide routes
+- [x] Update the About page's data-handling disclosure for Cloudflare D1, Resend, and hashed IP rate-limit data
+- [x] Document secure export, backup, import, rollback, and production cutover steps
+- [x] Run build, API, and end-to-end checks against the local Worker/D1 setup
+- [x] Create separate preview and production D1 databases in Cloudflare WEUR and apply the schema to both
+- [x] Create the Cloudflare Pages project and deploy a public preview with explicit, isolated D1 bindings
+- [x] Verify the preview API and all public SEO routes; confirm production and preview databases are empty after smoke-test cleanup
+- [x] Prevent the Pages preview hostname from being indexed while preserving production canonicals
+- [x] Make the default deployment script target preview; require an explicit production deploy command
+- [x] Confirm with the maintainer that no study data needs to move; skip historical data export/import
+- [x] Configure a random `RATE_LIMIT_SALT` for the Pages Production environment
+- [x] Configure a separate random `RATE_LIMIT_SALT` for the Pages Preview environment
+- [x] Configure `RESEND_API_KEY` for preview and production; verify Resend authentication on preview
+- [x] Verify the new production and preview D1 databases are empty before cutover
+- [x] Deploy and smoke-test the production Pages build on `polia-q-method.pages.dev`
+- [x] Attach `qmethod.polia.nl` to the Pages project and switch its external DNS CNAME; verify live routes after propagation
+
+#### Migration constraints and findings
+- The app currently uses Express, native `better-sqlite3`, and a local SQLite file at `server/data/qmethod.db`; it is not a static-only app.
+- Render's current free-service documentation says free web services cannot attach persistent disks, and local files are lost on spin-down/restart/redeploy. The existing `render.yaml` declares both `plan: free` and a disk, which conflicts with that documented limitation. Confirm and back up production data before cutover.
+- Cloudflare Workers cannot run the current native SQLite binding as-is. The API needs a Worker-compatible D1 adapter and deployment configuration.
+- Cloudflare authentication, the Pages project, and separate preview/production D1 databases are now configured. The live preview is `https://codex-migration-preview.polia-q-method.pages.dev`.
+- The maintainer confirmed there is no study data to carry over. Both new D1 databases were queried and contain zero studies and zero responses; historical Render export/import is out of scope for this cutover.
+- Separate random `RATE_LIMIT_SALT` secrets and the existing `RESEND_API_KEY` are configured in Pages Preview and Production. Both `/api/email-test` endpoints report valid Resend authentication; these checks do not send an email.
+- Production is deployed and healthy on `https://polia-q-method.pages.dev`, and `qmethod.polia.nl` is attached to the Pages project. The authoritative nameserver and public resolvers now return `polia-q-method.pages.dev` for the custom-domain CNAME.
+- Live custom-domain smoke checks returned HTTP 200 for `/api/health`, `/api/email-test`, `/`, `/about`, `/sitemap.xml`, and `/robots.txt`. Resend authentication is valid; the diagnostic does not send an email.
+
 ## Current Status
 
-**Last updated**: 2026-04-30
-**Active milestone**: Milestone 10 — Promotion research (complete)
-**Last completed**: Promotion research — compiled `promotion-research.md` with 11 Reddit subreddits, ResearchGate threads, Q-method mailing list, 7 core researchers + 7 recent authors to contact, 7 university LibGuides + 5 Q-method-specific resource pages for backlinks, competitor comparison table, email template, and prioritized action list
-**Next task**: Execute the promotion plan: (1) subscribe to q-method@listserv.kent.edu and post an announcement, (2) answer ResearchGate threads, (3) email qmethod.org and Peter Schmolck for software page inclusion, (4) post on Reddit, (5) email researchers for feedback
-**Blockers / decisions needed**: (1) Drop `polia-logo.png` into `client/public/` before deploying — the header references it. (2) Update the `<link rel="canonical">` URL in `client/index.html` if the production domain changes from `q-method.onrender.com`. (3) Set `BASE_URL` env var on Render if the production domain changes. (4) Organizer needs to set up Google Search Console and submit sitemap manually. (5) All promotion actions in Milestone 10 are manual/organizer tasks — see `promotion-research.md` for the full plan and prioritized action list.
+**Last updated**: 2026-10-12
+**Active milestone**: Milestone 11 — Cloudflare migration
+**Status**: Migration and custom-domain cutover are complete. Preview and Production are healthy, and the live domain routes to Cloudflare Pages.
+**Last completed**: Verified public DNS and all six live custom-domain smoke checks after cutover; see `progress.md` and `CLOUDFLARE_MIGRATION.md`.
+**Next task**: Monitor the live service and keep Render available during the rollback window. No study-data import was needed per the maintainer's decision.
+**Blockers / decisions needed**: None for the migration. Existing outreach work remains documented in `promotion-research.md`.

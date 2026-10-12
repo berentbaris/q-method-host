@@ -107,15 +107,16 @@ export default function About() {
         <section id="data-handling">
           <h2>How study data is handled</h2>
           <p>
-            Studies are accessed through a code or link, without accounts. The information
-            below describes the current application; researchers should review it before
-            choosing the tool for their study.
+            Studies are accessed through a code or link, without accounts. In the Cloudflare
+            deployment, Cloudflare Pages and Workers serve the site and API, Cloudflare D1
+            stores study data, and Resend delivers response emails. Researchers should review
+            these arrangements before choosing the tool for their study.
           </p>
           <dl className={about.dataList}>
             <div>
               <dt>Study information</dt>
               <dd>Study title, description, statements, sorting-grid configuration, organizer email
-                addresses, study code, and creation time are stored in the server database.</dd>
+                addresses, study code, and creation time are stored in the Cloudflare D1 database.</dd>
             </div>
             <div>
               <dt>Participant responses</dt>
@@ -126,8 +127,8 @@ export default function About() {
             <div>
               <dt>Email delivery</dt>
               <dd>The app attempts to send each response, including its name and explanations, to the
-                organizer addresses. Delivery uses Resend or the configured email provider. If no
-                provider is configured, response emails are printed in server logs instead.</dd>
+                organizer addresses using Resend. If delivery fails, the response remains stored in
+                the database and the failure is recorded in hosting logs.</dd>
             </div>
             <div>
               <dt>Analysis</dt>
@@ -149,16 +150,18 @@ export default function About() {
             or responses. Copies in organizer inboxes and email-provider systems are separate
             from the server database. Participants should contact their study organizer about
             their submitted information; any removal from the application requires maintainer
-            intervention. Hosting region, backup arrangements, and provider retention should be
-            confirmed with the maintainer if your study requires a defined arrangement.
+            intervention. Cloudflare D1 backup settings, hosting region, and provider retention
+            should be confirmed with the maintainer if your study requires a defined arrangement.
           </p>
           <h3>Website requests and technical information</h3>
           <p>
             The application does not include analytics or advertising trackers. Fonts are loaded
             from Google Fonts, so opening a page also makes requests to Google&apos;s font services.
             External links, such as ORCID and support links, open other services when followed.
-            The server temporarily uses IP addresses to limit repeated submissions; the hosting
-            and email providers may also keep their own operational logs.
+            The API uses the request IP to limit repeated submissions and stores a SHA-256 hash
+            for that purpose; the production deployment should set the secret salt documented
+            in the migration runbook. Cloudflare and Resend may also process operational request
+            or delivery data under their own service policies.
           </p>
           <p>
             Researchers remain responsible for explaining their study, obtaining appropriate

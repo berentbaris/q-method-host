@@ -5,4 +5,5 @@ dist/
 *.db-wal
 *.db-shm
 server/data/
+.wrangler/
 .DS_Store
