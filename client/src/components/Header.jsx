@@ -18,6 +18,7 @@ export default function Header() {
           <Link to="/create" className={styles.navLink}>Create a Study</Link>
           <Link to="/participate" className={styles.navLink}>Participate</Link>
           <Link to="/results" className={styles.navLink}>View Results</Link>
+          <Link to="/about" className={styles.navLink}>About</Link>
         </nav>
       </div>
     </header>
